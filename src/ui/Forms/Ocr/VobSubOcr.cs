@@ -644,6 +644,7 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             FormVobSubOcr_Shown(null, null);
             checkBoxShowOnlyForced.Checked = forcedOnly;
             checkBoxPromptForUnknownWords.Checked = false;
+            checkBoxCustomFourColors.Checked = false;
 
             if (ocrEngine?.ToLowerInvariant() == "nocr")
             {
