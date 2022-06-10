@@ -290,6 +290,8 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
         private bool _modiEnabled;
 
         private bool _fromMenuItem;
+        private bool _fromCommandLine = false;
+        private bool _convertFourColors = false;
 
         // DVD rip/vobsub
         private List<VobSubMergedPack> _vobSubMergedPackListOriginal;
@@ -644,7 +646,6 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             FormVobSubOcr_Shown(null, null);
             checkBoxShowOnlyForced.Checked = forcedOnly;
             checkBoxPromptForUnknownWords.Checked = false;
-            checkBoxCustomFourColors.Checked = false;
 
             if (ocrEngine?.ToLowerInvariant() == "nocr")
             {
@@ -864,7 +865,6 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             Initialize(subtitles, vobSubOcrSettings, fileName, language);
             _ocrMethodIndex = Configuration.Settings.VobSubOcr.LastOcrMethod == "Tesseract4" ? _ocrMethodTesseract5 : _ocrMethodTesseract302;
             var oldNOcrDrawText = checkBoxNOcrDrawUnknownLetters.Checked;
-
             if (ocrEngine?.ToLowerInvariant() == "nocr")
             {
                 InitializeNOcrForBatch(language);
@@ -930,7 +930,10 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
         {
             Initialize(vobSubMergedPackList, palette, vobSubOcrSettings, language);
             checkBoxShowOnlyForced.Checked = forcedOnly;
+            checkBoxCustomFourColors.Checked = false;
             InitializeOcrEngineBatch(language, ocrEngine);
+            _fromCommandLine = true;
+            _convertFourColors = false;
             DoBatch();
         }
 
@@ -1568,12 +1571,16 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             Color pattern;
             Color emphasis1;
             Color emphasis2;
-
+            bool useCustomFourColors = checkBoxCustomFourColors.Checked;
+            if (_fromCommandLine)
+            {
+                useCustomFourColors = _convertFourColors;
+            }     
             if (_mp4List != null)
             {
                 if (index >= 0 && index < _mp4List.Count)
                 {
-                    if (checkBoxCustomFourColors.Checked)
+                    if (useCustomFourColors)
                     {
                         GetCustomColors(out background, out pattern, out emphasis1, out emphasis2);
 
@@ -1597,7 +1604,7 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             {
                 if (index >= 0 && index < _spList.Count)
                 {
-                    if (checkBoxCustomFourColors.Checked)
+                    if (useCustomFourColors)
                     {
                         GetCustomColors(out background, out pattern, out emphasis1, out emphasis2);
 
@@ -1718,7 +1725,7 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
 
                         if (b != null)
                         {
-                            if (_isSon && checkBoxCustomFourColors.Checked)
+                            if (_isSon && useCustomFourColors)
                             {
                                 GetCustomColors(out background, out pattern, out emphasis1, out emphasis2);
 
@@ -1769,7 +1776,7 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             {
                 if (index >= 0 && index < _xSubList.Count)
                 {
-                    if (checkBoxCustomFourColors.Checked)
+                    if (useCustomFourColors)
                     {
                         GetCustomColors(out background, out pattern, out emphasis1, out emphasis2);
                         returnBmp = _xSubList[index].GetImage(background, pattern, emphasis1, emphasis2);
@@ -1877,7 +1884,7 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             }
             else if (index >= 0 && index < _vobSubMergedPackList.Count)
             {
-                if (checkBoxCustomFourColors.Checked)
+                if (useCustomFourColors)
                 {
                     GetCustomColors(out background, out pattern, out emphasis1, out emphasis2);
 
@@ -5030,7 +5037,7 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             checkBoxShowOnlyForced.Enabled = _hasForcedSubtitles;
             if (!hasIdxTimeCodes)
             {
-                checkBoxCustomFourColors.Checked = true;
+                checkBoxCustomFourColors.Checked = false;
             }
             LoadVobRip();
             return _subtitle;
