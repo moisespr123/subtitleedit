@@ -355,7 +355,7 @@ namespace Nikse.SubtitleEdit.Logic
                 return;
             }
 
-            int length = HtmlUtil.RemoveHtmlTags(textBox.Text, true).Length;
+            var length = textBox.Text.CountCharacters(false);
             if (e.Modifiers == Keys.None && e.KeyCode != Keys.Enter && length > Configuration.Settings.General.SubtitleLineMaximumLength)
             {
                 string newText;
@@ -1390,6 +1390,22 @@ namespace Nikse.SubtitleEdit.Logic
             }
 
             return control;
+        }
+
+        public static void SetNumericUpDownValue(NumericUpDown numericUpDown, int value)
+        {
+            if (value < numericUpDown.Minimum)
+            {
+                numericUpDown.Value = numericUpDown.Minimum;
+            }
+            else if (value > numericUpDown.Maximum)
+            {
+                numericUpDown.Value = numericUpDown.Maximum;
+            }
+            else
+            {
+                numericUpDown.Value = value;
+            }
         }
     }
 }

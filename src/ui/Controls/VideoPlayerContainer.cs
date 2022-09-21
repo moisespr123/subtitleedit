@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.Controls
@@ -46,6 +45,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         public event EventHandler OnButtonClicked;
         public event EventHandler OnEmptyPlayerClicked;
+        public event EventHandler OnPlayerClicked;
 
         public Panel PanelPlayer { get; private set; }
         private Panel _panelSubtitle;
@@ -85,6 +85,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         private bool _isMuted;
         private double? _muteOldVolume;
+        public bool PlayedWithCustomSpeed;
         private readonly System.ComponentModel.ComponentResourceManager _resources;
         public int ControlsHeight = 47;
         private const int OriginalSubtitlesHeight = 57;
@@ -365,6 +366,7 @@ namespace Nikse.SubtitleEdit.Controls
         private void SubtitleTextBoxMouseClick(object sender, MouseEventArgs e)
         {
             TogglePlayPause();
+            OnPlayerClicked?.Invoke(sender, e);
         }
 
         public Paragraph LastParagraph { get; set; }
@@ -580,6 +582,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
 
             TogglePlayPause();
+            OnPlayerClicked?.Invoke(sender, e);
         }
 
         public void InitializeVolume(double defaultVolume)
@@ -600,7 +603,15 @@ namespace Nikse.SubtitleEdit.Controls
             {
                 _panelSubtitle.Height += ControlsHeight;
                 _panelControls.Visible = false;
+
+
+                var useCompleteFullscreen = VideoPlayer is LibMpvDynamic && Configuration.Settings.General.MpvHandlesPreviewText;
+                if (useCompleteFullscreen)
+                {
+                    PanelPlayer.Dock = DockStyle.Fill;
+                }
             }
+
             if (hideCursor)
             {
                 HideCursor();
@@ -614,7 +625,13 @@ namespace Nikse.SubtitleEdit.Controls
                 _panelControls.Visible = true;
                 _panelControls.BringToFront();
                 _panelSubtitle.Height -= ControlsHeight;
+
+                if (PanelPlayer.Dock == DockStyle.Fill)
+                {
+                    PanelPlayer.Dock = DockStyle.None;
+                }
             }
+
             ShowCursor();
         }
 
@@ -1631,6 +1648,8 @@ namespace Nikse.SubtitleEdit.Controls
         /// </summary>
         public bool SmpteMode => Configuration.Settings.General.CurrentVideoIsSmpte;
 
+        public bool UsingFrontCenterAudioChannelOnly { get; set; } = false;
+
         public void RefreshProgressBar()
         {
             if (VideoPlayer == null)
@@ -1666,6 +1685,12 @@ namespace Nikse.SubtitleEdit.Controls
                     var span = TimeCode.FromSeconds(pos + Configuration.Settings.General.CurrentVideoOffsetInMs / TimeCode.BaseUnit);
                     _labelTimeCode.Text = $"{span.ToDisplayString()} / {dur.ToDisplayString()}";
                 }
+
+                if (UsingFrontCenterAudioChannelOnly)
+                {
+                    _labelTimeCode.Text += " FC";
+                }
+
                 ResizeTimeCode();
 
                 RefreshPlayPauseButtons();
@@ -1759,6 +1784,11 @@ namespace Nikse.SubtitleEdit.Controls
                 _pictureBoxPlay.Visible = true;
                 _pictureBoxPlay.BringToFront();
                 RefreshProgressBar();
+
+                if (PlayedWithCustomSpeed)
+                {
+                    VideoPlayer.PlayRate = 1.0;
+                }
             }
         }
 

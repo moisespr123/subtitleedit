@@ -61,6 +61,15 @@
       <HintPath>DLLs\Interop.QuartzTypeLib.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="Microsoft.Win32.Registry, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Win32.Registry.4.7.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.Core, Version=2.1.0.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NAudio.Core.2.1.0\lib\netstandard2.0\NAudio.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.WinMM, Version=2.1.0.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NAudio.WinMM.2.1.0\lib\netstandard2.0\NAudio.WinMM.dll</HintPath>
+    </Reference>
     <Reference Include="NCalc, Version=1.3.8.0, Culture=neutral, PublicKeyToken=973cde3f1cafed03, processorArchitecture=MSIL">
       <HintPath>..\..\packages\ncalc.1.3.8\lib\NCalc.dll</HintPath>
     </Reference>
@@ -84,17 +93,17 @@
       <HintPath>..\..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Primitives.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Security.AccessControl, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.AccessControl.4.7.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Principal.Windows, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Principal.Windows.4.7.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Vosk, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Vosk.0.3.38\lib\netstandard2.0\Vosk.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Document.NET, Version=2.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DocX.2.2.0\lib\net40\Xceed.Document.NET.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Words.NET, Version=2.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DocX.2.2.0\lib\net40\Xceed.Words.NET.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +155,12 @@
     <Compile Include="Forms\Assa\AssaProperties.Designer.cs">
       <DependentUpon>AssaProperties.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Assa\ImageColorPicker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Assa\ImageColorPicker.Designer.cs">
+      <DependentUpon>ImageColorPicker.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Assa\ResolutionResampler.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -188,10 +203,22 @@
     <Compile Include="Forms\Assa\TagHistory.Designer.cs">
       <DependentUpon>TagHistory.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\AudioToText.cs">
+    <Compile Include="Forms\AudioClipsGet.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\AudioToText.Designer.cs">
+    <Compile Include="Forms\AudioClipsGet.Designer.cs">
+      <DependentUpon>AudioClipsGet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SpeechRecognition\AudioToTextSelectedLines.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SpeechRecognition\AudioToTextSelectedLines.Designer.cs">
+      <DependentUpon>AudioToTextSelectedLines.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SpeechRecognition\AudioToText.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SpeechRecognition\AudioToText.Designer.cs">
       <DependentUpon>AudioToText.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\BatchConvertMkvEnding.cs">
@@ -254,11 +281,23 @@
     <Compile Include="Forms\AddWaveformBatch.Designer.cs">
       <DependentUpon>AddWaveformBatch.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\AudioToTextModelDownload.cs">
+    <Compile Include="Forms\SpeechRecognition\AudioToTextModelDownload.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\AudioToTextModelDownload.Designer.cs">
+    <Compile Include="Forms\SpeechRecognition\AudioToTextModelDownload.Designer.cs">
       <DependentUpon>AudioToTextModelDownload.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ConvertColorsToDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ConvertColorsToDialog.Designer.cs">
+      <DependentUpon>ConvertColorsToDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SpeechRecognition\Dictate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SpeechRecognition\Dictate.Designer.cs">
+      <DependentUpon>Dictate.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\DownloadVosk.cs">
       <SubType>Form</SubType>
@@ -277,6 +316,12 @@
     </Compile>
     <Compile Include="Forms\Options\SettingsCustomContinuationStyle.Designer.cs">
       <DependentUpon>SettingsCustomContinuationStyle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Options\WordLists.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Options\WordLists.Designer.cs">
+      <DependentUpon>WordLists.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ShotChangesList.cs">
       <SubType>Form</SubType>
@@ -1143,12 +1188,6 @@
     <Compile Include="Forms\Translate\TranslateBlock.Designer.cs">
       <DependentUpon>TranslateBlock.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Translate\TranslateExportImport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Translate\TranslateExportImport.Designer.cs">
-      <DependentUpon>TranslateExportImport.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\Translate\TranslateViaCopyPaste.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1309,6 +1348,7 @@
     <Compile Include="Logic\DarkTheme.cs" />
     <Compile Include="Logic\FileTypeAssociations.cs" />
     <Compile Include="Logic\FindReplaceDialogHelper.cs" />
+    <Compile Include="Logic\FontHelper.cs" />
     <Compile Include="Logic\Language.cs" />
     <Compile Include="Logic\LanguageDeserializer.cs" />
     <Compile Include="Logic\LanguageStructure.cs" />
@@ -1412,6 +1452,9 @@
     <EmbeddedResource Include="Forms\Assa\AssaProperties.resx">
       <DependentUpon>AssaProperties.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Assa\ImageColorPicker.resx">
+      <DependentUpon>ImageColorPicker.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Assa\ResolutionResampler.resx">
       <DependentUpon>ResolutionResampler.cs</DependentUpon>
     </EmbeddedResource>
@@ -1433,7 +1476,13 @@
     <EmbeddedResource Include="Forms\Assa\TagHistory.resx">
       <DependentUpon>TagHistory.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\AudioToText.resx">
+    <EmbeddedResource Include="Forms\AudioClipsGet.resx">
+      <DependentUpon>AudioClipsGet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SpeechRecognition\AudioToTextSelectedLines.resx">
+      <DependentUpon>AudioToTextSelectedLines.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SpeechRecognition\AudioToText.resx">
       <DependentUpon>AudioToText.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\BatchConvertMkvEnding.resx">
@@ -1466,8 +1515,14 @@
     <EmbeddedResource Include="Forms\AddWaveformBatch.resx">
       <DependentUpon>AddWaveformBatch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\AudioToTextModelDownload.resx">
+    <EmbeddedResource Include="Forms\SpeechRecognition\AudioToTextModelDownload.resx">
       <DependentUpon>AudioToTextModelDownload.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ConvertColorsToDialog.resx">
+      <DependentUpon>ConvertColorsToDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SpeechRecognition\Dictate.resx">
+      <DependentUpon>Dictate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DownloadVosk.resx">
       <DependentUpon>DownloadVosk.cs</DependentUpon>
@@ -1477,6 +1532,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Options\SettingsCustomContinuationStyle.resx">
       <DependentUpon>SettingsCustomContinuationStyle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Options\WordLists.resx">
+      <DependentUpon>WordLists.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ShotChangesList.resx">
       <DependentUpon>ShotChangesList.cs</DependentUpon>
@@ -1904,9 +1962,6 @@
     <EmbeddedResource Include="Forms\Translate\TranslateBlock.resx">
       <DependentUpon>TranslateBlock.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Translate\TranslateExportImport.resx">
-      <DependentUpon>TranslateExportImport.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Translate\TranslateViaCopyPaste.resx">
       <DependentUpon>TranslateViaCopyPaste.cs</DependentUpon>
     </EmbeddedResource>
@@ -2028,6 +2083,12 @@
     <Content Include="DLLs\Voikkox64.dll" />
     <Content Include="DLLs\Voikkox86.dll" />
     <None Include="Resources\SE2.ico" />
+    <None Include="Resources\webvtt.bmp" />
+    <None Include="Resources\webvtt.png" />
+    <None Include="Resources\itt.png" />
+    <None Include="Resources\ebu.png" />
+    <None Include="Resources\color-picker-small2.png" />
+    <None Include="Resources\rec32.png" />
     <Content Include="SE2.ico" />
     <None Include="Resources\SE.ico" />
     <None Include="Hunspellx64.dll">

@@ -146,33 +146,6 @@ namespace Nikse.SubtitleEdit.Core.Common
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
         }
 
-        public static WebProxy GetProxy()
-        {
-            if (!string.IsNullOrEmpty(Configuration.Settings.Proxy.ProxyAddress))
-            {
-                var proxy = new WebProxy(Configuration.Settings.Proxy.ProxyAddress);
-
-                if (!string.IsNullOrEmpty(Configuration.Settings.Proxy.UserName))
-                {
-                    if (string.IsNullOrEmpty(Configuration.Settings.Proxy.Domain))
-                    {
-                        proxy.Credentials = new NetworkCredential(Configuration.Settings.Proxy.UserName, Configuration.Settings.Proxy.DecodePassword());
-                    }
-                    else
-                    {
-                        proxy.Credentials = new NetworkCredential(Configuration.Settings.Proxy.UserName, Configuration.Settings.Proxy.DecodePassword(), Configuration.Settings.Proxy.Domain);
-                    }
-                }
-                else
-                {
-                    proxy.UseDefaultCredentials = true;
-                }
-
-                return proxy;
-            }
-            return null;
-        }
-
         public static bool IsBetweenNumbers(string s, int position)
         {
             if (string.IsNullOrEmpty(s) || position < 1 || position + 2 > s.Length)
@@ -973,7 +946,7 @@ namespace Nikse.SubtitleEdit.Core.Common
             return Type.GetType("Mono.Runtime") != null;
         }
 
-        public static string AssemblyVersion => Assembly.GetEntryAssembly().GetName().Version.ToString();
+        public static string AssemblyVersion => Assembly.GetEntryAssembly()?.GetName().Version.ToString();
 
         public static string AssemblyDescription
         {
@@ -1135,8 +1108,8 @@ namespace Nikse.SubtitleEdit.Core.Common
             return userWordListXmlFileName;
         }
 
-        public static readonly string UppercaseLetters = Configuration.Settings.General.UppercaseLetters.ToUpperInvariant();
-        public static readonly string LowercaseLetters = Configuration.Settings.General.UppercaseLetters.ToLowerInvariant();
+        public static readonly string UppercaseLetters = Configuration.Settings.General.UppercaseLetters.ToUpperInvariant() + "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ";
+        public static readonly string LowercaseLetters = Configuration.Settings.General.UppercaseLetters.ToLowerInvariant() + "αβγδεζηθικλμνξοπρσςτυφχψωήάόέ";
         public static readonly string LowercaseLettersWithNumbers = LowercaseLetters + "0123456789";
         public static readonly string AllLetters = UppercaseLetters + LowercaseLetters;
         public static readonly string AllLettersAndNumbers = UppercaseLetters + LowercaseLettersWithNumbers;

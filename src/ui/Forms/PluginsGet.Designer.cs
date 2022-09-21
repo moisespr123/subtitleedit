@@ -128,6 +128,7 @@
             this.listViewGetPlugins.TabIndex = 15;
             this.listViewGetPlugins.UseCompatibleStateImageBehavior = false;
             this.listViewGetPlugins.View = System.Windows.Forms.View.Details;
+            this.listViewGetPlugins.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listViewInstalledPlugins_ColumnClick);
             // 
             // columnHeaderName
             // 
@@ -217,6 +218,7 @@
             this.listViewInstalledPlugins.TabIndex = 28;
             this.listViewInstalledPlugins.UseCompatibleStateImageBehavior = false;
             this.listViewInstalledPlugins.View = System.Windows.Forms.View.Details;
+            this.listViewInstalledPlugins.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listViewInstalledPlugins_ColumnClick);
             // 
             // columnHeaderInsName
             // 
@@ -313,9 +315,9 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Plugins";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PluginsGet_KeyDown);
-            this.ResizeEnd += new System.EventHandler(this.PluginsGet_ResizeEnd);
             this.Shown += new System.EventHandler(this.PluginsGet_Shown);
+            this.ResizeEnd += new System.EventHandler(this.PluginsGet_ResizeEnd);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PluginsGet_KeyDown);
             this.tabControlPlugins.ResumeLayout(false);
             this.tabPageInstalledPlugins.ResumeLayout(false);
             this.tabPageGetPlugins.ResumeLayout(false);

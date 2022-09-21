@@ -1,17 +1,19 @@
-﻿using Nikse.SubtitleEdit.Core.AudioToText;
-using Nikse.SubtitleEdit.Core.Common;
-using Nikse.SubtitleEdit.Logic;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Threading;
 using System.Windows.Forms;
+using Nikse.SubtitleEdit.Core.AudioToText;
+using Nikse.SubtitleEdit.Core.Common;
+using Nikse.SubtitleEdit.Logic;
 
-namespace Nikse.SubtitleEdit.Forms
+namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
 {
     public sealed partial class AudioToTextModelDownload : Form
     {
         public bool AutoClose { get; internal set; }
+        public string LastDownloadedModel { get; internal set; }
+        private readonly CancellationTokenSource _cancellationTokenSource;
 
         public AudioToTextModelDownload()
         {
@@ -24,7 +26,7 @@ namespace Nikse.SubtitleEdit.Forms
             UiUtil.FixLargeFonts(this, buttonDownload);
 
             var selectedIndex = 0;
-            foreach (var downloadModel in DownloadModel.VoskModels.OrderBy(p=>p.LanguageName))
+            foreach (var downloadModel in DownloadModel.VoskModels.OrderBy(p => p.LanguageName))
             {
                 comboBoxModels.Items.Add(downloadModel);
                 if (selectedIndex == 0 && downloadModel.TwoLetterLanguageCode == "en")
@@ -35,6 +37,8 @@ namespace Nikse.SubtitleEdit.Forms
 
             comboBoxModels.SelectedIndex = selectedIndex;
             labelPleaseWait.Text = string.Empty;
+            textBoxError.Visible = false;
+            _cancellationTokenSource = new CancellationTokenSource();
         }
 
         private void AudioToTextDownload_KeyDown(object sender, KeyEventArgs e)
@@ -53,58 +57,78 @@ namespace Nikse.SubtitleEdit.Forms
             }
 
             var downloadModel = (DownloadModel)comboBoxModels.Items[comboBoxModels.SelectedIndex];
+            var url = downloadModel.Url;
             try
             {
                 labelPleaseWait.Text = LanguageSettings.Current.General.PleaseWait;
                 buttonDownload.Enabled = false;
                 Refresh();
                 Cursor = Cursors.WaitCursor;
-                var url = downloadModel.Url;
-                var wc = new WebClient { Proxy = Utilities.GetProxy() };
-
-                wc.DownloadDataCompleted += wc_DownloadDataCompleted;
-                wc.DownloadProgressChanged += (o, args) =>
+                var httpClient = HttpClientHelper.MakeHttpClient();
+                using (var downloadStream = new MemoryStream())
                 {
-                    labelPleaseWait.Text = LanguageSettings.Current.General.PleaseWait + "  " + args.ProgressPercentage + "%";
-                };
-                wc.DownloadDataAsync(new Uri(url));
+                    var downloadTask = httpClient.DownloadAsync(url, downloadStream, new Progress<float>((progress) =>
+                    {
+                        var pct = (int)Math.Round(progress * 100.0, MidpointRounding.AwayFromZero);
+                        labelPleaseWait.Text = LanguageSettings.Current.General.PleaseWait + "  " + pct + "%";
+                    }), _cancellationTokenSource.Token);
+
+                    while (!downloadTask.IsCompleted && !downloadTask.IsCanceled)
+                    {
+                        Application.DoEvents();
+                    }
+
+                    if (downloadTask.IsCanceled)
+                    {
+                        DialogResult = DialogResult.Cancel;
+                        labelPleaseWait.Refresh();
+                        return;
+                    }
+
+                    CompleteDownload(downloadStream);
+                }
             }
             catch (Exception exception)
             {
                 labelPleaseWait.Text = string.Empty;
                 buttonDownload.Enabled = true;
                 Cursor = Cursors.Default;
-                MessageBox.Show(exception.Message + Environment.NewLine + Environment.NewLine + exception.StackTrace);
+                MessageBox.Show($"Unable to download {url}!" + Environment.NewLine + Environment.NewLine +
+                                exception.Message + Environment.NewLine + Environment.NewLine + exception.StackTrace);
+                DialogResult = DialogResult.Cancel;
             }
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
+            _cancellationTokenSource.Cancel();
             DialogResult = DialogResult.Cancel;
         }
 
-        private void wc_DownloadDataCompleted(object sender, DownloadDataCompletedEventArgs e)
+        private void CompleteDownload(MemoryStream downloadStream)
         {
-            if (e.Error != null)
+            if (downloadStream.Length == 0)
             {
-                labelPleaseWait.Text = string.Format(LanguageSettings.Current.SettingsFfmpeg.XDownloadFailed, "Vosk model");
-                buttonDownload.Enabled = true;
-                Cursor = Cursors.Default;
-                return;
+                throw new Exception("No content downloaded - missing file or no internet connection!");
             }
 
-            string folder = Path.Combine(Configuration.DataDirectory, "Vosk");
+            var folder = Path.Combine(Configuration.DataDirectory, "Vosk");
+
             if (!Directory.Exists(folder))
             {
                 Directory.CreateDirectory(folder);
             }
 
-            using (var ms = new MemoryStream(e.Result))
-            using (var zip = ZipExtractor.Open(ms))
+            using (var zip = ZipExtractor.Open(downloadStream))
             {
                 var dir = zip.ReadCentralDir();
                 foreach (var entry in dir)
                 {
+                    if (LastDownloadedModel == null)
+                    {
+                        LastDownloadedModel = Path.GetDirectoryName(entry.FilenameInZip);
+                    }
+
                     var path = Path.Combine(folder, entry.FilenameInZip);
                     zip.ExtractFile(entry, path);
                 }
@@ -112,6 +136,8 @@ namespace Nikse.SubtitleEdit.Forms
 
             Cursor = Cursors.Default;
             labelPleaseWait.Text = string.Empty;
+
+            
 
             if (AutoClose)
             {

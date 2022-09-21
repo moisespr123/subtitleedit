@@ -1,6 +1,7 @@
 ﻿using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Forms;
 using System;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -148,9 +149,7 @@ namespace Nikse.SubtitleEdit.Logic
             };
 
             processMakeVideo.StartInfo.Arguments = processMakeVideo.StartInfo.Arguments.Trim();
-
             SetupDataReceiveHandler(dataReceivedHandler, processMakeVideo);
-
             return processMakeVideo;
         }
 
@@ -184,15 +183,21 @@ namespace Nikse.SubtitleEdit.Logic
             };
         }
 
-        public static string GetScreenShot(string inputFileName, string timeCode)
+        public static string GetScreenShot(string inputFileName, string timeCode, string colorMatrix = "")
         {
             var outputFileName = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.png");
+            var vfMatrix = string.Empty;
+            if (!string.IsNullOrEmpty(colorMatrix))
+            {
+                vfMatrix = $"-vf colormatrix={colorMatrix}";
+            }
+
             var process = new Process
             {
                 StartInfo =
                 {
                     FileName = GetFfmpegLocation(),
-                    Arguments = $"-ss {timeCode} -i \"{inputFileName}\" -frames:v 1 -q:v 2 \"{outputFileName}\"",
+                    Arguments = $"-ss {timeCode} -i \"{inputFileName}\" {vfMatrix} -frames:v 1 -q:v 2 \"{outputFileName}\"",
                     UseShellExecute = false,
                     CreateNoWindow = true
                 }

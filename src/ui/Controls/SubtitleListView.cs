@@ -1515,16 +1515,9 @@ namespace Nikse.SubtitleEdit.Controls
 
             if (_settings.Tools.ListViewSyntaxColorGap && i >= 0 && i < paragraphs.Count - 1 && ColumnIndexGap >= 0 && !paragraph.StartTime.IsMaxTime)
             {
-                Paragraph next = paragraphs[i + 1];
+                var next = paragraphs[i + 1];
                 var gapMilliseconds = (int)Math.Round(next.StartTime.TotalMilliseconds - paragraph.EndTime.TotalMilliseconds);
-                if (gapMilliseconds < Configuration.Settings.General.MinimumMillisecondsBetweenLines)
-                {
-                    item.SubItems[ColumnIndexGap].BackColor = Configuration.Settings.Tools.ListViewSyntaxErrorColor;
-                }
-                else
-                {
-                    item.SubItems[ColumnIndexGap].BackColor = BackColor;
-                }
+                item.SubItems[ColumnIndexGap].BackColor = gapMilliseconds < Configuration.Settings.General.MinimumMillisecondsBetweenLines ? Configuration.Settings.Tools.ListViewSyntaxErrorColor : BackColor;
             }
 
             if (ColumnIndexTextOriginal >= 0 && item.SubItems.Count >= ColumnIndexTextOriginal)
@@ -1539,8 +1532,8 @@ namespace Nikse.SubtitleEdit.Controls
 
             if (_settings.Tools.ListViewSyntaxColorLongLines)
             {
-                string s = HtmlUtil.RemoveHtmlTags(paragraph.Text, true);
-                foreach (string line in s.SplitToLines())
+                var s = HtmlUtil.RemoveHtmlTags(paragraph.Text, true);
+                foreach (var line in s.SplitToLines())
                 {
                     if (line.CountCharacters(false) > Configuration.Settings.General.SubtitleLineMaximumLength)
                     {
@@ -1548,7 +1541,7 @@ namespace Nikse.SubtitleEdit.Controls
                         return;
                     }
                 }
-                int noOfLines = paragraph.NumberOfLines;
+                var noOfLines = paragraph.NumberOfLines;
                 if (s.CountCharacters(false) <= Configuration.Settings.General.SubtitleLineMaximumLength * noOfLines)
                 {
                     if (noOfLines > Configuration.Settings.General.MaxNumberOfLines && _settings.Tools.ListViewSyntaxMoreThanXLines)
@@ -1611,7 +1604,7 @@ namespace Nikse.SubtitleEdit.Controls
                         item.SubItems.Add(GetDisplayTime(paragraph.EndTime));
                         break;
                     case SubtitleColumn.Duration:
-                        item.SubItems.Add(paragraph.Duration.ToShortDisplayString());
+                        item.SubItems.Add(GetDisplayDuration(paragraph));
                         break;
                     case SubtitleColumn.CharactersPerSeconds:
                         item.SubItems.Add($"{Utilities.GetCharactersPerSecond(paragraph):0.00}");
@@ -1647,6 +1640,16 @@ namespace Nikse.SubtitleEdit.Controls
             item.StateImageIndex = paragraph.Bookmark != null ? 0 : -1;
             item.Font = font;
             return item;
+        }
+
+        private static string GetDisplayDuration(Paragraph paragraph)
+        {
+            if (paragraph.StartTime.IsMaxTime || paragraph.EndTime.IsMaxTime)
+            {
+                return "-";
+            }
+
+            return paragraph.Duration.ToShortDisplayString();
         }
 
         public void SelectNone()
@@ -1844,7 +1847,7 @@ namespace Nikse.SubtitleEdit.Controls
 
                 if (ColumnIndexDuration >= 0)
                 {
-                    item.SubItems[ColumnIndexDuration].Text = paragraph.Duration.ToShortDisplayString();
+                    item.SubItems[ColumnIndexDuration].Text = GetDisplayDuration(paragraph);
                 }
 
                 if (ColumnIndexGap >= 0)
@@ -1968,7 +1971,7 @@ namespace Nikse.SubtitleEdit.Controls
 
                 if (ColumnIndexDuration >= 0)
                 {
-                    item.SubItems[ColumnIndexDuration].Text = paragraph.Duration.ToShortDisplayString();
+                    item.SubItems[ColumnIndexDuration].Text = GetDisplayDuration(paragraph);
                 }
 
                 if (ColumnIndexGap >= 0)
@@ -2011,7 +2014,7 @@ namespace Nikse.SubtitleEdit.Controls
 
                         if (ColumnIndexDuration >= 0)
                         {
-                            item.SubItems[ColumnIndexDuration].Text = p.Duration.ToShortDisplayString();
+                            item.SubItems[ColumnIndexDuration].Text = GetDisplayDuration(p);
                         }
                     }
                 }
@@ -2063,7 +2066,7 @@ namespace Nikse.SubtitleEdit.Controls
 
                 if (ColumnIndexDuration >= 0)
                 {
-                    item.SubItems[ColumnIndexDuration].Text = paragraph.Duration.ToShortDisplayString();
+                    item.SubItems[ColumnIndexDuration].Text = GetDisplayDuration(paragraph);
                 }
 
                 if (ColumnIndexGap >= 0)
@@ -2290,27 +2293,21 @@ namespace Nikse.SubtitleEdit.Controls
                 return;
             }
 
-            var tempText = Columns[ColumnIndexTextOriginal].Text;
-            Columns[ColumnIndexTextOriginal].Text = Columns[ColumnIndexText].Text;
-            Columns[ColumnIndexText].Text = tempText;
-
-            var tempColumn = SubtitleColumns[ColumnIndexTextOriginal];
-            SubtitleColumns[ColumnIndexTextOriginal] = SubtitleColumns[ColumnIndexText];
-            SubtitleColumns[ColumnIndexText] = tempColumn;
+            (Columns[ColumnIndexTextOriginal].Text, Columns[ColumnIndexText].Text) = (Columns[ColumnIndexText].Text, Columns[ColumnIndexTextOriginal].Text);
+            (SubtitleColumns[ColumnIndexTextOriginal], SubtitleColumns[ColumnIndexText]) = (SubtitleColumns[ColumnIndexText], SubtitleColumns[ColumnIndexTextOriginal]);
             UpdateColumnIndexes();
-
             BeginUpdate();
-            int i = 0;
+            var i = 0;
             foreach (ListViewItem item in Items)
             {
                 var p = subtitle.GetParagraphOrDefault(i);
-                if (p != null)
+                if (p != null && ColumnIndexText < item.SubItems.Count)
                 {
                     item.SubItems[ColumnIndexText].Text = p.Text.Replace(Environment.NewLine, _lineSeparatorString);
                 }
 
                 var original = Utilities.GetOriginalParagraph(i, p, subtitleOriginal.Paragraphs);
-                if (original != null)
+                if (original != null && ColumnIndexTextOriginal < item.SubItems.Count)
                 {
                     item.SubItems[ColumnIndexTextOriginal].Text = original.Text.Replace(Environment.NewLine, _lineSeparatorString);
                 }

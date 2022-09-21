@@ -24,7 +24,7 @@ namespace Nikse.SubtitleEdit.Core.Common
         public static readonly string ShotChangesDirectory = DataDirectory + "ShotChanges" + Path.DirectorySeparatorChar;
         public static readonly string AutoBackupDirectory = DataDirectory + "AutoBackup" + Path.DirectorySeparatorChar;
         public static readonly string VobSubCompareDirectory = DataDirectory + "VobSub" + Path.DirectorySeparatorChar;
-        public static readonly string TesseractDirectory = DataDirectory + "Tesseract510" + Path.DirectorySeparatorChar;
+        public static readonly string TesseractDirectory = DataDirectory + "Tesseract520" + Path.DirectorySeparatorChar;
         public static readonly string Tesseract302Directory = DataDirectory + "Tesseract302" + Path.DirectorySeparatorChar;
         public static readonly string WaveformsDirectory = DataDirectory + "Waveforms" + Path.DirectorySeparatorChar;
         public static readonly string PluginsDirectory = DataDirectory + "Plugins" + Path.DirectorySeparatorChar;
@@ -187,6 +187,11 @@ namespace Nikse.SubtitleEdit.Core.Common
         {
             if (IsRunningOnLinux || IsRunningOnMac)
             {
+                if (Directory.Exists("/usr/share/tesseract-ocr/5/tessdata"))
+                {
+                    return "/usr/share/tesseract-ocr/5/tessdata";
+                }
+
                 if (Directory.Exists("/usr/share/tesseract-ocr/4.00/tessdata"))
                 {
                     return "/usr/share/tesseract-ocr/4.00/tessdata";

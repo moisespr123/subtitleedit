@@ -2,22 +2,24 @@
 
   <PropertyGroup>
     <TargetFrameworks>net48;netstandard2.1</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(VisualStudioVersion)' == '15.0' ">net472</TargetFrameworks>
     <RootNamespace>Nikse.SubtitleEdit.Core</RootNamespace>
     <AssemblyName>libse</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <PackageProjectUrl>https://github.com/SubtitleEdit/subtitleedit/tree/master/libse</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SubtitleEdit/subtitleedit/tree/master/libse</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/SubtitleEdit/subtitleedit/tree/main/libse</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SubtitleEdit/subtitleedit/tree/main/libse</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>subtitle subtitles subrip srt blu-ray sup</PackageTags>
     <Authors>Nikolaj Olsson</Authors>
     <PackageIcon>Icon.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>SE 3.6.4
-- fix bd sup palette issue
-- new subtitle formats</PackageReleaseNotes>
+    <PackageReleaseNotes>
+SE 3.6.7
+- Keep paltte when re-saving bd sup
+- Minor bug fixes
+- New subtitle formats
+    </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -51,15 +53,11 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
-    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
-    <PackageReference Include="UTF.Unknown" Version="2.5.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="UTF.Unknown" Version="2.5.1" />
     <PackageReference Include="zlib.net-mutliplatform" Version="1.0.6" />
   </ItemGroup>
 

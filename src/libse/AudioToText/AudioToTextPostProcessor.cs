@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Core.Dictionaries;
 using Nikse.SubtitleEdit.Core.Forms.FixCommonErrors;
@@ -19,7 +17,7 @@ namespace Nikse.SubtitleEdit.Core.AudioToText
         public double SetPeriodIfDistanceToNextIsMoreThan { get; set; } = 300;
         public double SetPeriodIfDistanceToNextIsMoreThanAlways { get; set; } = 500;
 
-        public int ParagraphMaxChars { get; set; } = 86;
+        public int ParagraphMaxChars { get; set; }
 
         public string TwoLetterLanguageCode { get; }
 
@@ -27,9 +25,15 @@ namespace Nikse.SubtitleEdit.Core.AudioToText
         public AudioToTextPostProcessor(string twoLetterLanguageCode)
         {
             TwoLetterLanguageCode = twoLetterLanguageCode;
+
+            ParagraphMaxChars = Configuration.Settings.Tools.AudioToTextLineMaxChars;
+            if (ParagraphMaxChars < 10 || ParagraphMaxChars > 1_000_000)
+            {
+                ParagraphMaxChars = 86;
+            }
         }
 
-        public Subtitle Generate(List<ResultText> resultTexts, bool usePostProcessing)
+        public Subtitle Generate(List<ResultText> resultTexts, bool usePostProcessing, bool addPeriods, bool mergeLines, bool fixCasing, bool fixShortDuration)
         {
             _resultTexts = resultTexts;
             var subtitle = new Subtitle();
@@ -40,15 +44,38 @@ namespace Nikse.SubtitleEdit.Core.AudioToText
                     continue;
                 }
 
-                subtitle.Paragraphs.Add(new Paragraph(resultText.Text, (double)resultText.Start * 1000.0, (double)resultText.End * 1000.0));
+                if (!string.IsNullOrWhiteSpace(resultText.Text))
+                {
+                    subtitle.Paragraphs.Add(new Paragraph(resultText.Text, (double)resultText.Start * 1000.0, (double)resultText.End * 1000.0));
+                }
             }
 
+            return Generate(subtitle, usePostProcessing, true, true, true, true);
+        }
+
+        public Subtitle Generate(Subtitle subtitle, bool usePostProcessing, bool addPeriods, bool mergeLines, bool fixCasing, bool fixShortDuration)
+        {
             if (usePostProcessing)
             {
-                subtitle = AddPeriods(subtitle, TwoLetterLanguageCode);
-                subtitle = MergeShortLines(subtitle, TwoLetterLanguageCode);
-                subtitle = FixCasing(subtitle, TwoLetterLanguageCode);
-                subtitle = FixShortDuration(subtitle);
+                if (addPeriods)
+                {
+                    subtitle = AddPeriods(subtitle, TwoLetterLanguageCode);
+                }
+
+                if (mergeLines)
+                {
+                    subtitle = MergeShortLines(subtitle, TwoLetterLanguageCode);
+                }
+
+                if (fixCasing)
+                {
+                    subtitle = FixCasing(subtitle, TwoLetterLanguageCode);
+                }
+
+                if (fixShortDuration)
+                {
+                    subtitle = FixShortDuration(subtitle);
+                }
             }
 
             subtitle.Renumber();
@@ -125,12 +152,12 @@ namespace Nikse.SubtitleEdit.Core.AudioToText
 
             if (language == "jp")
             {
-                ParagraphMaxChars = 13;
+                ParagraphMaxChars = Configuration.Settings.Tools.AudioToTextLineMaxCharsJp;
             }
 
             if (language == "cn")
             {
-                ParagraphMaxChars = 16;
+                ParagraphMaxChars = Configuration.Settings.Tools.AudioToTextLineMaxCharsCn;
             }
 
             var mergedSubtitle = new Subtitle();
@@ -204,7 +231,11 @@ namespace Nikse.SubtitleEdit.Core.AudioToText
 
             if (!lastMerged)
             {
-                mergedSubtitle.Paragraphs.Add(new Paragraph(subtitle.GetParagraphOrDefault(subtitle.Paragraphs.Count - 1)));
+                var last = subtitle.GetParagraphOrDefault(subtitle.Paragraphs.Count - 1);
+                if (last != null && !string.IsNullOrWhiteSpace(last.Text))
+                {
+                    mergedSubtitle.Paragraphs.Add(new Paragraph(last));
+                }
             }
 
             return mergedSubtitle;
@@ -280,21 +311,10 @@ namespace Nikse.SubtitleEdit.Core.AudioToText
             // fix german nouns
             if (language == "de")
             {
-                var inputFile = Path.Combine(Configuration.DictionariesDirectory, "deu_Nouns.txt");
-                if (File.Exists(inputFile))
+                var germanNouns = new GermanNouns();
+                foreach (var paragraph in subtitle.Paragraphs)
                 {
-                    var nounList = FileUtil.ReadAllLinesShared(inputFile, Encoding.UTF8);
-                    foreach (var paragraph in subtitle.Paragraphs)
-                    {
-                        var text = paragraph.Text;
-                        var textNoTags = HtmlUtil.RemoveHtmlTags(text, true);
-                        if (textNoTags != textNoTags.ToUpperInvariant() && !string.IsNullOrEmpty(text))
-                        {
-                            var st = new StrippableText(text);
-                            st.FixCasing(nounList, true, false, false, string.Empty);
-                            paragraph.Text = st.MergedString;
-                        }
-                    }
+                    paragraph.Text = germanNouns.UppercaseNouns(paragraph.Text);
                 }
             }
 

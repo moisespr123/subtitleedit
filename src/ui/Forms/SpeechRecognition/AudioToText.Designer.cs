@@ -1,4 +1,4 @@
-﻿namespace Nikse.SubtitleEdit.Forms
+﻿namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
 {
     sealed partial class AudioToText
     {
@@ -51,6 +51,7 @@
             this.buttonAddFile = new System.Windows.Forms.Button();
             this.listViewInputFiles = new System.Windows.Forms.ListView();
             this.columnHeaderFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.labelFC = new System.Windows.Forms.Label();
             this.groupBoxModels.SuspendLayout();
             this.groupBoxInputFiles.SuspendLayout();
             this.SuspendLayout();
@@ -63,7 +64,7 @@
             this.buttonCancel.Location = new System.Drawing.Point(622, 427);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 8;
+            this.buttonCancel.TabIndex = 10;
             this.buttonCancel.Text = "C&ancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
@@ -75,7 +76,7 @@
             this.buttonGenerate.Location = new System.Drawing.Point(373, 427);
             this.buttonGenerate.Name = "buttonGenerate";
             this.buttonGenerate.Size = new System.Drawing.Size(125, 23);
-            this.buttonGenerate.TabIndex = 6;
+            this.buttonGenerate.TabIndex = 8;
             this.buttonGenerate.Text = "&Generate";
             this.buttonGenerate.UseVisualStyleBackColor = true;
             this.buttonGenerate.Click += new System.EventHandler(this.ButtonGenerate_Click);
@@ -87,7 +88,7 @@
             this.progressBar1.Location = new System.Drawing.Point(12, 427);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(355, 12);
-            this.progressBar1.TabIndex = 5;
+            this.progressBar1.TabIndex = 7;
             this.progressBar1.Visible = false;
             // 
             // labelProgress
@@ -97,7 +98,7 @@
             this.labelProgress.Location = new System.Drawing.Point(12, 409);
             this.labelProgress.Name = "labelProgress";
             this.labelProgress.Size = new System.Drawing.Size(70, 13);
-            this.labelProgress.TabIndex = 4;
+            this.labelProgress.TabIndex = 6;
             this.labelProgress.Text = "labelProgress";
             // 
             // textBoxLog
@@ -153,7 +154,7 @@
             this.linkLabelOpenModelsFolder.Location = new System.Drawing.Point(301, 51);
             this.linkLabelOpenModelsFolder.Name = "linkLabelOpenModelsFolder";
             this.linkLabelOpenModelsFolder.Size = new System.Drawing.Size(98, 13);
-            this.linkLabelOpenModelsFolder.TabIndex = 0;
+            this.linkLabelOpenModelsFolder.TabIndex = 3;
             this.linkLabelOpenModelsFolder.TabStop = true;
             this.linkLabelOpenModelsFolder.Text = "Open models folder";
             this.linkLabelOpenModelsFolder.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelOpenModelFolder_LinkClicked);
@@ -175,6 +176,7 @@
             this.comboBoxModels.Name = "comboBoxModels";
             this.comboBoxModels.Size = new System.Drawing.Size(240, 21);
             this.comboBoxModels.TabIndex = 1;
+            this.comboBoxModels.SelectedIndexChanged += new System.EventHandler(this.comboBoxModels_SelectedIndexChanged);
             // 
             // linkLabelVoskWebSite
             // 
@@ -219,7 +221,7 @@
             this.buttonBatchMode.Location = new System.Drawing.Point(504, 427);
             this.buttonBatchMode.Name = "buttonBatchMode";
             this.buttonBatchMode.Size = new System.Drawing.Size(112, 23);
-            this.buttonBatchMode.TabIndex = 7;
+            this.buttonBatchMode.TabIndex = 9;
             this.buttonBatchMode.Text = "Batch mode";
             this.buttonBatchMode.UseVisualStyleBackColor = true;
             this.buttonBatchMode.Click += new System.EventHandler(this.buttonBatchMode_Click);
@@ -295,11 +297,23 @@
             this.columnHeaderFileName.Text = "File name";
             this.columnHeaderFileName.Width = 455;
             // 
+            // labelFC
+            // 
+            this.labelFC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelFC.ForeColor = System.Drawing.Color.Gray;
+            this.labelFC.Location = new System.Drawing.Point(247, 442);
+            this.labelFC.Name = "labelFC";
+            this.labelFC.Size = new System.Drawing.Size(120, 17);
+            this.labelFC.TabIndex = 19;
+            this.labelFC.Text = "labelFC";
+            this.labelFC.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // AudioToText
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(709, 464);
+            this.Controls.Add(this.labelFC);
             this.Controls.Add(this.groupBoxInputFiles);
             this.Controls.Add(this.buttonBatchMode);
             this.Controls.Add(this.checkBoxUsePostProcessing);
@@ -321,9 +335,10 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Video/audio to text";
+            this.Text = "Audio to text";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AudioToText_FormClosing);
             this.Load += new System.EventHandler(this.AudioToText_Load);
+            this.Shown += new System.EventHandler(this.AudioToText_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.AudioToText_KeyDown);
             this.groupBoxModels.ResumeLayout(false);
             this.groupBoxModels.PerformLayout();
@@ -357,5 +372,6 @@
         private System.Windows.Forms.Button buttonClear;
         private System.Windows.Forms.Button buttonRemoveFile;
         private System.Windows.Forms.Button buttonAddFile;
+        private System.Windows.Forms.Label labelFC;
     }
 }

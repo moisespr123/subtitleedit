@@ -149,7 +149,9 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                     new KanopyHtml(),
                     new LambdaCap(),
                     new Lrc(),
+                    new LrcNoEndTime(),
                     new MacSub(),
+                    new MagicVideoTitler(),
                     new MediaTransData(),
                     new MicroDvd(),
                     new MidwayInscriberCGX(),
@@ -182,6 +184,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                     new Scenarist(),
                     new ScenaristClosedCaptions(),
                     new ScenaristClosedCaptionsDropFrame(),
+                    new SmartTitler(),
                     new SmilTimesheetData(),
                     new SmpteTt2052(),
                     new SoftNiSub(),
@@ -205,7 +208,6 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                     new SwiftText(),
                     new SwiftTextLineNumber(),
                     new SwiftTextLineNOAndDur(),
-                    new Tek(),
                     new TimeXml(),
                     new TimeXml2(),
                     new TimedText10(),
@@ -641,6 +643,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
         {
             return new SubtitleFormat[]
             {
+                new NkhCuePoints(),
                 new DlDd(),
                 new Ted20(),
                 new Captionate(),
@@ -656,6 +659,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                 new JsonTypeOnlyLoad1(),
                 new JsonTypeOnlyLoad2(),
                 new JsonTypeOnlyLoad3(),
+                new JsonTypeOnlyLoad4(),
                 new TranscriptiveJson(),
                 new KaraokeCdgCreatorText(),
                 new VidIcelandic(),

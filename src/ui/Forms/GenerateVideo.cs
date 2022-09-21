@@ -14,6 +14,7 @@ namespace Nikse.SubtitleEdit.Forms
     public sealed partial class GenerateVideo : Form
     {
         public string VideoFileName { get; private set; }
+        private string _subtitleFileName;
         private bool _abort;
         private long _processedFrames;
         private long _startTicks;
@@ -27,8 +28,15 @@ namespace Nikse.SubtitleEdit.Forms
             InitializeComponent();
             UiUtil.FixFonts(this);
 
+            _subtitleFileName = Utilities.GetFileNameWithoutExtension(subtitle.FileName);
             numericUpDownDurationMinutes.Value = Configuration.Settings.Tools.BlankVideoMinutes;
-            var maxTimeP = subtitle?.Paragraphs.Where(p => !p.EndTime.IsMaxTime).Max(p => p.EndTime.TotalMilliseconds);
+            
+            double? maxTimeP = null;
+            if (subtitle?.Paragraphs != null && subtitle.Paragraphs.Count > 0)
+            {
+                maxTimeP = subtitle?.Paragraphs.Where(p => !p.EndTime.IsMaxTime).Max(p => p.EndTime.TotalMilliseconds);
+            }
+
             if (maxTimeP.HasValue && maxTimeP.Value / 1000 > 120)
             {
                 var minutes = (int)maxTimeP.Value / 1000 / 60 + 1;
@@ -55,7 +63,7 @@ namespace Nikse.SubtitleEdit.Forms
             labelFrameRate.Text = LanguageSettings.Current.General.FrameRate;
             groupBoxBackground.Text = LanguageSettings.Current.GenerateBlankVideo.Background;
             buttonColor.Text = LanguageSettings.Current.Settings.ChooseColor;
-            buttonOK.Text = LanguageSettings.Current.Watermark.Generate;
+            buttonGenerate.Text = LanguageSettings.Current.Watermark.Generate;
             labelResolution.Text = LanguageSettings.Current.ExportPngXml.VideoResolution;
             labelPleaseWait.Text = LanguageSettings.Current.General.PleaseWait;
             buttonCancel.Text = LanguageSettings.Current.General.Cancel;
@@ -130,8 +138,13 @@ namespace Nikse.SubtitleEdit.Forms
         private void buttonOK_Click(object sender, EventArgs e)
         {
             EnableDisableControls(false);
-            var fileName = radioButtonColor.Checked ? "blank_video_solid" : (radioButtonCheckeredImage.Checked ? "blank_video_checkered" : "blank_video_image");
-            using (var saveDialog = new SaveFileDialog { FileName = fileName, Filter = "MP4|*.mp4|Matroska|*.mkv|WebM|*.webm" })
+
+            if (string.IsNullOrEmpty(_subtitleFileName) || _subtitleFileName == "Untitled")
+            {
+                _subtitleFileName = radioButtonColor.Checked ? "blank_video_solid" : (radioButtonCheckeredImage.Checked ? "blank_video_checkered" : "blank_video_image");
+            }
+
+            using (var saveDialog = new SaveFileDialog { FileName = _subtitleFileName, Filter = "MP4|*.mp4|Matroska|*.mkv|WebM|*.webm" })
             {
                 if (saveDialog.ShowDialog(this) != DialogResult.OK)
                 {
@@ -192,7 +205,7 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void EnableDisableControls(bool enable)
         {
-            buttonOK.Enabled = enable;
+            buttonGenerate.Enabled = enable;
             numericUpDownDurationMinutes.Enabled = enable;
             numericUpDownWidth.Enabled = enable;
             numericUpDownHeight.Enabled = enable;
@@ -229,7 +242,7 @@ namespace Nikse.SubtitleEdit.Forms
         private void buttonCancel_Click(object sender, EventArgs e)
         {
             _abort = true;
-            if (buttonOK.Enabled)
+            if (buttonGenerate.Enabled)
             {
                 DialogResult = DialogResult.Cancel;
             }
@@ -346,6 +359,11 @@ namespace Nikse.SubtitleEdit.Forms
                     }
                 }
             }
+        }
+
+        private void GenerateVideo_Shown(object sender, EventArgs e)
+        {
+            buttonGenerate.Show();
         }
     }
 }

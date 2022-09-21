@@ -106,7 +106,7 @@ SET "LanguageToolPath=src\UpdateLanguageFiles\bin\debug\UpdateLanguageFiles.exe"
 IF NOT EXIST "%LanguageToolPath%" (
   ECHO Compile UpdateLanguageFiles!
 )
-"%LanguageToolPath%" "LanguageMaster.xml" "src\ui\Logic\LanguageDeserializer.cs"
+"%LanguageToolPath%" "LanguageBaseEnglish.xml" "src\ui\Logic\LanguageDeserializer.cs"
 ECHO.
 
 
@@ -164,29 +164,29 @@ IF NOT EXIST "temp_zip\Tesseract302" MD "temp_zip\Tesseract302"
 IF NOT EXIST "temp_zip\Icons"        MD "temp_zip\Icons"
 
 ECHO.
-COPY /Y /V "..\..\..\..\LICENSE.txt"      "temp_zip\"
-COPY /Y /V "..\..\..\..\Changelog.txt"    "temp_zip\"
-COPY /Y /V "..\..\..\..\preview.mkv"    "temp_zip\"
-COPY /Y /V "Hunspellx86.dll"           "temp_zip\"
-COPY /Y /V "Hunspellx64.dll"           "temp_zip\"
-COPY /Y /V "libse.dll"           "temp_zip\"
-COPY /Y /V "zlib.net.dll"           "temp_zip\"
-COPY /Y /V "NHunspell.dll"           "temp_zip\"
-COPY /Y /V "UtfUnknown.dll"           "temp_zip\"
-COPY /Y /V "Vosk.dll"           "temp_zip\"
-COPY /Y /V "NCalc.dll"           "temp_zip\"
-COPY /Y /V "..\..\DLLs\Interop.QuartzTypeLib.dll"           "temp_zip\"
-COPY /Y /V "System.Net.Http.Extensions.dll"           "temp_zip\"
-COPY /Y /V "Newtonsoft.Json.dll"           "temp_zip\"
-COPY /Y /V "Xceed.Document.NET.dll"  "temp_zip\"
-COPY /Y /V "Xceed.Words.NET.dll"  "temp_zip\"
-COPY /Y /V "System.Net.Http.Primitives.dll"           "temp_zip\"
-COPY /Y /V "SubtitleEdit.exe"          "temp_zip\"
-COPY /Y /V "Languages\*.xml"           "temp_zip\Languages\"
-COPY /Y /V "..\..\..\..\Dictionaries\*.*" "temp_zip\Dictionaries\"
-COPY /Y /V "..\..\..\..\Ocr\*.*"          "temp_zip\Ocr\"
-XCOPY /Y /V "..\..\..\..\Tesseract302\*.*"      "temp_zip\Tesseract302\" /S
-COPY /Y /V "..\..\..\..\Icons\*.ico"          "temp_zip\Icons\"
+COPY /Y /V "..\..\..\..\LICENSE.txt"               "temp_zip\"
+COPY /Y /V "..\..\..\..\Changelog.txt"             "temp_zip\"
+COPY /Y /V "..\..\..\..\preview.mkv"               "temp_zip\"
+COPY /Y /V "Hunspellx86.dll"                       "temp_zip\"
+COPY /Y /V "Hunspellx64.dll"                       "temp_zip\"
+COPY /Y /V "libse.dll"                             "temp_zip\"
+COPY /Y /V "zlib.net.dll"                          "temp_zip\"
+COPY /Y /V "NHunspell.dll"                         "temp_zip\"
+COPY /Y /V "UtfUnknown.dll"                        "temp_zip\"
+COPY /Y /V "Vosk.dll"                              "temp_zip\"
+COPY /Y /V "NCalc.dll"                             "temp_zip\"
+COPY /Y /V "..\..\DLLs\Interop.QuartzTypeLib.dll"  "temp_zip\"
+COPY /Y /V "System.Net.Http.Extensions.dll"        "temp_zip\"
+COPY /Y /V "Newtonsoft.Json.dll"                   "temp_zip\"
+COPY /Y /V "System.Net.Http.Primitives.dll"        "temp_zip\"
+COPY /Y /V "NAudio.Core.dll"                       "temp_zip\"
+COPY /Y /V "NAudio.WinMM.dll"                      "temp_zip\"
+COPY /Y /V "SubtitleEdit.exe"                      "temp_zip\"
+COPY /Y /V "Languages\*.xml"                       "temp_zip\Languages\"
+COPY /Y /V "..\..\..\..\Dictionaries\*.*"          "temp_zip\Dictionaries\"
+COPY /Y /V "..\..\..\..\Ocr\*.*"                   "temp_zip\Ocr\"
+XCOPY /Y /V "..\..\..\..\Tesseract302\*.*"         "temp_zip\Tesseract302\" /S
+COPY /Y /V "..\..\..\..\Icons\*.ico"               "temp_zip\Icons\"
 
 PUSHD "temp_zip"
 START "" /B /WAIT "%SEVENZIP%" a -tzip -mx=9 "SubtitleEditBeta.zip" * >NUL

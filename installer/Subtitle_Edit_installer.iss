@@ -223,6 +223,7 @@ Source: ..\Dictionaries\sr_NoBreakAfterList.xml;   DestDir: {userappdata}\Subtit
 Source: ..\Dictionaries\da_DK_user.xml;            DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Dictionaries\de_DE_user.xml;            DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Dictionaries\en_US_user.xml;            DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
+Source: ..\Dictionaries\en_US_se.xml;              DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion; Components: main
 Source: ..\Dictionaries\es_MX_user.xml;            DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Dictionaries\fi_FI_user.xml;            DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Dictionaries\nl_NL_user.xml;            DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
@@ -309,10 +310,10 @@ Source: {#bindir}\Vosk.dll;                        DestDir: {app};              
 Source: {#bindir}\NCalc.dll;                       DestDir: {app};                                    Flags: ignoreversion; Components: main
 Source: ..\src\ui\DLLs\Interop.QuartzTypeLib.dll;  DestDir: {app};                                    Flags: ignoreversion; Components: main
 Source: {#bindir}\Newtonsoft.Json.dll;             DestDir: {app};                                    Flags: ignoreversion; Components: main
-Source: {#bindir}\Xceed.Document.NET.dll;          DestDir: {app};                                    Flags: ignoreversion; Components: main
-Source: {#bindir}\Xceed.Words.NET.dll;             DestDir: {app};                                    Flags: ignoreversion; Components: main
 Source: {#bindir}\System.Net.Http.Extensions.dll;  DestDir: {app};                                    Flags: ignoreversion; Components: main
 Source: {#bindir}\System.Net.Http.Primitives.dll;  DestDir: {app};                                    Flags: ignoreversion; Components: main
+Source: {#bindir}\NAudio.Core.dll;                 DestDir: {app};                                    Flags: ignoreversion; Components: main
+Source: {#bindir}\NAudio.WinMM.dll;                DestDir: {app};                                    Flags: ignoreversion; Components: main
 Source: ..\Changelog.txt;                          DestDir: {app};                                    Flags: ignoreversion; Components: main
 Source: ..\LICENSE.txt;                            DestDir: {app};                                    Flags: ignoreversion; Components: main
 Source: Icons\uninstall.ico;                       DestDir: {app}\Icons;                              Flags: ignoreversion; Components: main
@@ -350,10 +351,10 @@ Type: files;      Name: {app}\Vosk.dll;                               Check: IsU
 Type: files;      Name: {app}\NCalc.dll;                              Check: IsUpgrade()
 Type: files;      Name: {app}\Interop.QuartzTypeLib.dll;              Check: IsUpgrade()
 Type: files;      Name: {app}\Newtonsoft.Json.dll;                    Check: IsUpgrade()
-Type: files;      Name: {app}\Xceed.Document.NET.dll;                 Check: IsUpgrade()
-Type: files;      Name: {app}\Xceed.Words.NET.dll;                    Check: IsUpgrade()
 Type: files;      Name: {app}\System.Net.Http.Extensions.dll;         Check: IsUpgrade()
 Type: files;      Name: {app}\System.Net.Http.Primitives.dll;         Check: IsUpgrade()
+Type: files;      Name: {app}\NAudio.Core.dll;                        Check: IsUpgrade()
+Type: files;      Name: {app}\NAudio.WinMM.dll;                       Check: IsUpgrade()
 
 ; Remove old files from the {app} dir
 Type: files;      Name: {app}\Dictionaries\da_names.xml;               Check: IsUpgrade()
@@ -363,6 +364,7 @@ Type: files;      Name: {app}\Dictionaries\en_US.aff;                  Check: Is
 Type: files;      Name: {app}\Dictionaries\en_US.dic;                  Check: IsUpgrade()
 Type: files;      Name: {app}\Dictionaries\en_names.xml;               Check: IsUpgrade()
 Type: files;      Name: {app}\Dictionaries\en_US_user.xml;             Check: IsUpgrade()
+Type: files;      Name: {app}\Dictionaries\en_US_se.xml;               Check: IsUpgrade()
 Type: files;      Name: {app}\Dictionaries\eng_OCRFixReplaceList.xml;  Check: IsUpgrade()
 Type: files;      Name: {app}\Dictionaries\names.xml;                  Check: IsUpgrade()
 Type: files;      Name: {app}\Dictionaries\no_names.xml;               Check: IsUpgrade()
@@ -682,6 +684,7 @@ begin
   DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\da_DK_user.xml'));
   DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\de_DE_user.xml'));
   DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\en_US_user.xml'));
+  DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\en_US_se.xml'));
   DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\es_MX_user.xml'));
   DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\fi_FI_user.xml'));
   DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\nl_NL_user.xml'));

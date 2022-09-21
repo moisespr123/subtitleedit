@@ -31,7 +31,7 @@ namespace Nikse.SubtitleEdit.Forms
         {
             this.components = new System.ComponentModel.Container();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.buttonOK = new System.Windows.Forms.Button();
+            this.buttonGenerate = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.labelPleaseWait = new System.Windows.Forms.Label();
             this.numericUpDownFontSize = new System.Windows.Forms.NumericUpDown();
@@ -91,6 +91,7 @@ namespace Nikse.SubtitleEdit.Forms
             this.nTSC720x480ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.x352ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.x272ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.labelVideoBitrate = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFontSize)).BeginInit();
             this.groupBoxSettings.SuspendLayout();
             this.groupBoxVideo.SuspendLayout();
@@ -113,15 +114,15 @@ namespace Nikse.SubtitleEdit.Forms
             // 
             // buttonOK
             // 
-            this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOK.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonOK.Location = new System.Drawing.Point(646, 570);
-            this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Size = new System.Drawing.Size(121, 23);
-            this.buttonOK.TabIndex = 4;
-            this.buttonOK.Text = "Generate";
-            this.buttonOK.UseVisualStyleBackColor = true;
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonGenerate.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.buttonGenerate.Location = new System.Drawing.Point(646, 570);
+            this.buttonGenerate.Name = "buttonGenerate";
+            this.buttonGenerate.Size = new System.Drawing.Size(121, 23);
+            this.buttonGenerate.TabIndex = 4;
+            this.buttonGenerate.Text = "Generate";
+            this.buttonGenerate.UseVisualStyleBackColor = true;
+            this.buttonGenerate.Click += new System.EventHandler(this.buttonOK_Click);
             // 
             // buttonCancel
             // 
@@ -197,6 +198,7 @@ namespace Nikse.SubtitleEdit.Forms
             this.groupBoxSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxSettings.Controls.Add(this.labelVideoBitrate);
             this.groupBoxSettings.Controls.Add(this.checkBoxBox);
             this.groupBoxSettings.Controls.Add(this.labelPreviewPleaseWait);
             this.groupBoxSettings.Controls.Add(this.checkBoxAlignRight);
@@ -306,7 +308,7 @@ namespace Nikse.SubtitleEdit.Forms
             this.groupBoxVideo.Controls.Add(this.labelVideoEncoding);
             this.groupBoxVideo.Location = new System.Drawing.Point(6, 165);
             this.groupBoxVideo.Name = "groupBoxVideo";
-            this.groupBoxVideo.Size = new System.Drawing.Size(364, 197);
+            this.groupBoxVideo.Size = new System.Drawing.Size(388, 197);
             this.groupBoxVideo.TabIndex = 8;
             this.groupBoxVideo.TabStop = false;
             this.groupBoxVideo.Text = "Video";
@@ -317,7 +319,7 @@ namespace Nikse.SubtitleEdit.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonVideoChooseStandardRes.Location = new System.Drawing.Point(263, 24);
             this.buttonVideoChooseStandardRes.Name = "buttonVideoChooseStandardRes";
-            this.buttonVideoChooseStandardRes.Size = new System.Drawing.Size(27, 23);
+            this.buttonVideoChooseStandardRes.Size = new System.Drawing.Size(51, 23);
             this.buttonVideoChooseStandardRes.TabIndex = 14;
             this.buttonVideoChooseStandardRes.Text = "...";
             this.buttonVideoChooseStandardRes.UseVisualStyleBackColor = true;
@@ -518,9 +520,9 @@ namespace Nikse.SubtitleEdit.Forms
             this.groupBoxAudio.Controls.Add(this.checkBoxMakeStereo);
             this.groupBoxAudio.Controls.Add(this.labelAudioSampleRate);
             this.groupBoxAudio.Controls.Add(this.comboBoxAudioSampleRate);
-            this.groupBoxAudio.Location = new System.Drawing.Point(376, 165);
+            this.groupBoxAudio.Location = new System.Drawing.Point(400, 165);
             this.groupBoxAudio.Name = "groupBoxAudio";
-            this.groupBoxAudio.Size = new System.Drawing.Size(445, 277);
+            this.groupBoxAudio.Size = new System.Drawing.Size(421, 277);
             this.groupBoxAudio.TabIndex = 10;
             this.groupBoxAudio.TabStop = false;
             this.groupBoxAudio.Text = "Audio";
@@ -548,6 +550,7 @@ namespace Nikse.SubtitleEdit.Forms
             this.comboBoxAudioBitRate.Name = "comboBoxAudioBitRate";
             this.comboBoxAudioBitRate.Size = new System.Drawing.Size(121, 21);
             this.comboBoxAudioBitRate.TabIndex = 5;
+            this.comboBoxAudioBitRate.SelectedValueChanged += new System.EventHandler(this.comboBoxAudioBitRate_SelectedValueChanged);
             // 
             // comboBoxAudioEnc
             // 
@@ -611,7 +614,7 @@ namespace Nikse.SubtitleEdit.Forms
             // 
             this.numericUpDownTargetFileSize.Location = new System.Drawing.Point(120, 401);
             this.numericUpDownTargetFileSize.Maximum = new decimal(new int[] {
-            25000,
+            1000000,
             0,
             0,
             0});
@@ -628,6 +631,7 @@ namespace Nikse.SubtitleEdit.Forms
             0,
             0,
             0});
+            this.numericUpDownTargetFileSize.ValueChanged += new System.EventHandler(this.numericUpDownTargetFileSize_ValueChanged);
             // 
             // labelFileSize
             // 
@@ -816,6 +820,15 @@ namespace Nikse.SubtitleEdit.Forms
             this.x272ToolStripMenuItem.Text = "640x272";
             this.x272ToolStripMenuItem.Click += new System.EventHandler(this.ResolutionPickClick);
             // 
+            // labelVideoBitrate
+            // 
+            this.labelVideoBitrate.AutoSize = true;
+            this.labelVideoBitrate.Location = new System.Drawing.Point(193, 403);
+            this.labelVideoBitrate.Name = "labelVideoBitrate";
+            this.labelVideoBitrate.Size = new System.Drawing.Size(86, 13);
+            this.labelVideoBitrate.TabIndex = 14;
+            this.labelVideoBitrate.Text = "labelVideoBitrate";
+            // 
             // GenerateVideoWithHardSubs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -828,7 +841,7 @@ namespace Nikse.SubtitleEdit.Forms
             this.Controls.Add(this.labelProgress);
             this.Controls.Add(this.labelPleaseWait);
             this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.buttonOK);
+            this.Controls.Add(this.buttonGenerate);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.textBoxLog);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -861,7 +874,7 @@ namespace Nikse.SubtitleEdit.Forms
         #endregion
 
         private System.Windows.Forms.ProgressBar progressBar1;
-        private System.Windows.Forms.Button buttonOK;
+        private System.Windows.Forms.Button buttonGenerate;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Label labelPleaseWait;
         private System.Windows.Forms.NumericUpDown numericUpDownFontSize;
@@ -921,5 +934,6 @@ namespace Nikse.SubtitleEdit.Forms
         private System.Windows.Forms.ToolStripMenuItem nTSC720x480ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem x352ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem x272ToolStripMenuItem;
+        private System.Windows.Forms.Label labelVideoBitrate;
     }
 }

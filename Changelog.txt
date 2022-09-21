@@ -1,12 +1,71 @@
 ﻿Subtitle Edit Changelog
 
-3.6.7 (xth August 2022)
+3.6.8 (xth October 2022) BETA
 * NEW:
+   * Option to use only "front center" audio channel - thx shanedk
+   * Add support for OCR via Google's Cloud Vision API - thx Flitskikker 
+   * "Convert colors to dialog" (also batch) - thx Flitskikker 
+   * Add EBU stl file property icon - thx Leon 
+   * Add new sub format - thx Edward
+   * Add new json sub format - thx Flitskikker
+   * Add new sub format - thx George
+   * Add shortcut "Loop selection" - thx OmrSi
+   * Add shortcut for "Open containing folder" - thx OmrSi
+   * Add shorcuts for play with speed 1.5x/2x - thx OmrSi
+   * Add "nOCR" option to "Batch convert" - thx Gen3ric
+   * New proxy settings
+   * Add "ASSA image color picker" incl. shortcut - thx Érico
+   * Add CLI param /deletecontains:word - thx sweetngx
+   * Add ignore white space to compare - thx Leon
+   * Enable "Audio to text" for Linux - thx edcol/coastal45
+   * Add "Allow overlap" in "Change speed" - thx OmrSi
+* IMPROVED:
+   * Update Polish translation - thx admas
+   * Update Bulgarian translation - thx Калин
+   * Update Chinese translation - thx nkh0472
+   * Update Italian translation - thx bovirus
+   * Update Korean translation - thx domddol
+   * Update Portuguese translation - thx hugok79
+   * Update French translation - the Peirre
+   * Add error label for "Batch convert" - thx Leon
+   * Batch convert: Improved "Remove lines with style/actor"
+   * Allow empty split for "split at video/cursor" - thx OmrSi
+   * Improve fullscreen play video size with mpv - thx GrampaWildWilly
+   * Can detect Tesseract 5 on Linux - thx shag00
+   * nOCR selected lines only (list view context menu)
+   * Audio to text: Auto select downloaded model after download
+   * Allow for multiple X-TIMESTAMP-MAPs in WebVTT - thx doctorm
+   * Use subtitle file name for blank video - thx OmrSi
+* FIXED:
+   * Fix crash with large files (+25GB) in burn-in - thx OmrSi  
+   * Fix crash when switching text-boxes/list-view-items - thx Leon
+   * Fix minor bug for shortcut "Go to prev line and play" - thx nissansz
+   * Fix minor issue with "FCE:Remove dash single line" - thx Minherre  
+   * Re-add FinalCutProXml properties - thx hu
+   * Don't check "Continuation style" when merging dialog - thx OmrSi 
+   * Fix ASSA background box issue - thx Érico
+   * Fix "*" showing in titlebar after offsetting with no change - thx OmrSi
+   * Fix issues with NQC shot change rules - thx OmrSi
+   * Fix UI issue in copy-paste translate
+
+
+3.6.7 (13th August 2022)
+* NEW:
+   * Add custom "continuation style" - thx Flitskikker
    * Add Icelandic language auto detect - thx Elheym
    * More options for "Modify selection"
    * CLI change output-file-name - thx BenJamesAndo
    * Add Polish speech recognition vosk/kaldi model
+   * Add Japanese large speech rec vosk/kaldi model - thx coastal45
    * Add Netflix Chinese profile - thx Kester
+   * Fix casing of some German nouns after audio-to-text
+   * Add toolbar icon for WebVTT properties - thx Leon
+   * Add shortcut for toggle between text box and waveform - thx Marko
+   * Add shortcuts for go to next/prev and focus waveform - thx cyzs233
+   * Export audio for selected lines - thx nissansz
+   * Audio-to-text for selected lines - thx Mishasama 
+   * Add "Calc cps only wihout space/punctuation" - thx Michele
+   * Add "{gap}" to custom text export - thx Shaun
 * IMPROVED:
    * Update Polish translation - thx admas
    * Update Bulgarian translation - thx Калин
@@ -17,12 +76,21 @@
    * Update Korean translation - thx domddol
    * Update Finnish translation - thx Teijo S
    * Update French translation - the Peirre
+   * Update Brazilian Portuguese translation - thx Igor
+   * Update Greek translation - thx PMitsakis
    * Update Vosk to v0.3.42
+   * Update Tesseract OCR to 5.2.0
    * Minor improvements for compare
    * Improve top alignment capture for bdsup - thx tormento
    * Improve DCinema 2010 - thx stephw999
    * Add taskbar progress bar for audio to text - thx lambdacore12
    * Warn about duplicate style names in ASSA/SSA
+   * Improve keeping original bd sup colors - thx resolution
+   * Spell check can now have "SE" word list (besides user words)
+   * Separate "Word lists" to own menu item
+   * Add bit rate info for burn-in two pass - thx Marko
+   * Fix obsolete ffmpeg param "-vol" - thx qwerty12
+   * Use current audio track for audio-to-text - thx edwardg117
 * FIXED:
    * Fix crash in "Remove text for HI" - thx loicvan
    * Fix crash in "Fix music notation" - thx ReallyInventiveUserName
@@ -31,8 +99,19 @@
    * Fix crash in compare export - thx 1380
    * Fix crash in visual sync - thx fusefib
    * Fix crash in export ssa styles w dup style name - thx A-Winters
+   * Fix crash in bd sup edit when changing color/resolution/alpha
+   * Fix crash in generate blank video with no sub loaded
+   * Fix crash in post processing after vosk/kaldi - thx Can/WestcoastHstd
+   * Fix crash in "duration, bridge gaps" - thx stephpw
+   * Fix crash (somewhat) calling GDI w many/special chars - thx holduan
    * Fix for remove ASSA line as empty - thx Leon
    * Fix for finding delay in mkv - thx cyzs233/signedout
+   * Fix bd sup edit quick OCR
+   * Fix reading QuickTime text with < 5 lines - thx chloehong
+   * Fix minor issue for import plain text - thx Leon
+   * Fix for "Save as" with "default save as format" after mkv - thx Peter
+   * Fix issues with NQC shot change rules - thx OmrSi
+   * Fix for go to with SMPTE - thx OmrSi
 
 
 3.6.6 (25th May 2022)

@@ -2906,7 +2906,8 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
             var bmp = extra.Bitmap != null ? (Bitmap)extra.Bitmap.Clone() : s.GetBitmap();
             var nBmp = new NikseBitmap(bmp);
             nBmp.MakeTwoColor(200);
-            var list = NikseBitmapImageSplitter.SplitBitmapToLettersNew(nBmp, 8, false, true, 15, true);
+            nBmp.CropTop(0, Color.FromArgb(0, 0, 0, 0));
+            var list = NikseBitmapImageSplitter.SplitBitmapToLettersNew(nBmp, 10, false, true, 20, true);
             var sb = new StringBuilder();
             foreach (var item in list)
             {
@@ -2919,12 +2920,12 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                 }
                 else
                 {
-                    var match = nOcrDb.GetMatch(item.NikseBitmap, item.Top, true, 40);
+                    var match = nOcrDb.GetMatch(item.NikseBitmap, item.Top, true, 50);
                     sb.Append(match != null ? FixUppercaseLowercaseIssues(item, match) : "*");
                 }
             }
 
-            p.Text = sb.ToString().Trim();
+            p.Text = sb.ToString().Trim().Replace(Environment.NewLine, " ");
         }
 
         private void centerSelectedLinesHorizontallyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3026,15 +3027,11 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
             SetupProgressBar(GetIndices(true));
 
             int count = 0;
-            var lockObject = new object();
             var selectedIndices = GetIndices(true);
-            Parallel.ForEach(selectedIndices, index =>
+            foreach (var index in selectedIndices)
             {
                 Interlocked.Increment(ref count);
-                lock (lockObject)
-                {
-                    progressBar1.Value = count;
-                }
+                progressBar1.Value = count;
 
                 var extra = _extra[index];
                 var bmp = extra.Bitmap != null ? (Bitmap)extra.Bitmap.Clone() : GetBitmap(_binSubtitles[index]);
@@ -3052,12 +3049,10 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                 }
 
                 bmp.Dispose();
-                lock (lockObject)
-                {
-                    progressBar1.Refresh();
-                    Application.DoEvents();
-                }
-            });
+                progressBar1.Refresh();
+                Application.DoEvents();
+            }
+
             progressBar1.Hide();
         }
 
@@ -3289,6 +3284,7 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
 
                     bmp.Dispose();
                 }
+
                 progressBar1.Hide();
             }
         }
@@ -3536,14 +3532,10 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                 var selectedIndices = GetIndices(onlySelectedLines);
                 SetupProgressBar(selectedIndices);
                 int count = 0;
-                var lockObject = new object();
-                Parallel.ForEach(selectedIndices, i =>
+                foreach (var i in selectedIndices)
                 {
                     Interlocked.Increment(ref count);
-                    lock (lockObject)
-                    {
-                        progressBar1.Value = count;
-                    }
+                    progressBar1.Value = count;
 
                     var sub = _binSubtitles[i];
                     var extraInner = _extra[i];
@@ -3562,12 +3554,10 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                     }
 
                     bmpInner.Dispose();
-                    lock (lockObject)
-                    {
-                        progressBar1.Refresh();
-                        Application.DoEvents();
-                    }
-                });
+                    progressBar1.Refresh();
+                    Application.DoEvents();
+                }
+
                 progressBar1.Hide();
             }
         }
@@ -3625,14 +3615,10 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                 SetupProgressBar(selectedIndices);
 
                 int count = 0;
-                var lockObject = new object();
-                Parallel.ForEach(selectedIndices, i =>
+                foreach (var i in selectedIndices)
                 {
                     Interlocked.Increment(ref count);
-                    lock (lockObject)
-                    {
-                        progressBar1.Value = count;
-                    }
+                    progressBar1.Value = count;
                     var sub = _binSubtitles[i];
                     var extraInner = _extra[i];
                     var bmpInner = extraInner.Bitmap != null ? (Bitmap)extraInner.Bitmap.Clone() : GetBitmap(sub);
@@ -3648,12 +3634,9 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                     }
 
                     bmpInner.Dispose();
-                    lock (lockObject)
-                    {
-                        progressBar1.Refresh();
-                        Application.DoEvents();
-                    }
-                });
+                    progressBar1.Refresh();
+                    Application.DoEvents();
+                }
 
                 progressBar1.Hide();
             }
@@ -3695,14 +3678,10 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                 var selectedIndices = GetIndices(onlySelectedLines);
                 SetupProgressBar(selectedIndices);
                 int count = 0;
-                var lockObject = new object();
-                Parallel.ForEach(selectedIndices, i =>
+                foreach (var i in selectedIndices)
                 {
                     Interlocked.Increment(ref count);
-                    lock (lockObject)
-                    {
-                        progressBar1.Value = count;
-                    }
+                    progressBar1.Value = count;
 
                     var sub = _binSubtitles[i];
                     var extraInner = _extra[i];
@@ -3719,12 +3698,10 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                     }
 
                     bmpInner.Dispose();
-                    lock (lockObject)
-                    {
-                        progressBar1.Refresh();
-                    }
+                    progressBar1.Refresh();
                     Application.DoEvents();
-                });
+                }
+
                 progressBar1.Hide();
             }
         }

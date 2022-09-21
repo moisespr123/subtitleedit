@@ -2,7 +2,7 @@
 <Language Name="suomi">
   <General>
     <Title>Subtitle Edit</Title>
-    <Version>3.6.6</Version>
+    <Version>3.6.7</Version>
     <TranslatedBy>Suomentanut vm, päivittänyt Teijo S. [07-12-2021]</TranslatedBy>
     <CultureName>fi-FI</CultureName>
     <HelpFile />
@@ -221,7 +221,7 @@ HUOM! Tarkista vapaa levytila.</WaveFileMalformed>
     <Bottom>Alareuna</Bottom>
     <TakePosFromVideo>Kaappaa videon sijainti</TakePosFromVideo>
   </AssaProgressBarGenerator>
-  <AssaResulationChanger>
+  <AssaResolutionChanger>
     <Title>Muuta skripin tarkkuutta</Title>
     <SourceVideoRes>Lähdevideon tarkkuus</SourceVideoRes>
     <TargetVideoRes>Kohdevideon tarkkuus</TargetVideoRes>
@@ -230,7 +230,7 @@ HUOM! Tarkista vapaa levytila.</WaveFileMalformed>
     <ChangeResolutionPositions>Muuta sijainnin tarkkuutta</ChangeResolutionPositions>
     <ChangeResolutionDrawing>Muuta piirroksen tarkkuutta</ChangeResolutionDrawing>
     <SourceAndTargetEqual>Lähde- ja kohde tarkkuudet ovat identtiset, ei muutettavaa.</SourceAndTargetEqual>
-  </AssaResulationChanger>
+  </AssaResolutionChanger>
   <AssaSetBackgroundBox>
     <Title>Luo taustalaatikko</Title>
     <Padding>Pehmuste
