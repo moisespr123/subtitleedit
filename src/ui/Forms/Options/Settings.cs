@@ -132,6 +132,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             checkBoxReplace.Checked = gs.ShowToolbarReplace;
             checkBoxTBFixCommonErrors.Checked = gs.ShowToolbarFixCommonErrors;
             checkBoxTBRemoveTextForHi.Checked = gs.ShowToolbarRemoveTextForHi;
+            checkBoxTBToggleSourceView.Checked = gs.ShowToolbarToggleSourceView;
             checkBoxVisualSync.Checked = gs.ShowToolbarVisualSync;
             checkBoxTBBurnIn.Checked = gs.ShowToolbarBurnIn;
             checkBoxSettings.Checked = gs.ShowToolbarSettings;
@@ -363,6 +364,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             labelTBBurnIn.Text = language.BurnIn;
             labelTBSpellCheck.Text = language.SpellCheck;
             labelTBNetflixQualityCheck.Text = language.NetflixQualityCheck;
+            labelToggleSourceView.Text = language.ToggleView;
             labelTBSettings.Text = language.SettingsName;
             labelTBHelp.Text = language.Help;
             checkBoxToolbarNew.Text = LanguageSettings.Current.General.Visible;
@@ -379,6 +381,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             checkBoxNetflixQualityCheck.Text = LanguageSettings.Current.General.Visible;
             checkBoxSettings.Text = LanguageSettings.Current.General.Visible;
             checkBoxHelp.Text = LanguageSettings.Current.General.Visible;
+            checkBoxTBToggleSourceView.Text = LanguageSettings.Current.General.Visible;
 
             // Toolbar icons first row
             labelTBOpen.Left = Math.Max(labelTBNew.Right, checkBoxToolbarNew.Right) + 18;
@@ -573,9 +576,12 @@ namespace Nikse.SubtitleEdit.Forms.Options
             comboBoxAutoBackup.Items[2] = language.AutoBackupEveryFiveMinutes;
             comboBoxAutoBackup.Items[3] = language.AutoBackupEveryFifteenMinutes;
 
-            comboBoxAutoBackupDeleteAfter.Items[0] = language.AutoBackupDeleteAfterOneMonth;
-            comboBoxAutoBackupDeleteAfter.Items[1] = language.AutoBackupDeleteAfterThreeMonths;
-            comboBoxAutoBackupDeleteAfter.Items[2] = language.AutoBackupDeleteAfterSixMonths;
+            comboBoxAutoBackupDeleteAfter.Items.Clear();
+            comboBoxAutoBackupDeleteAfter.Items.Add(language.AutoBackupDeleteAfterOneMonth);
+            for (var i = 2; i <= 24; i++)
+            {
+                comboBoxAutoBackupDeleteAfter.Items.Add(string.Format(language.AutoBackupDeleteAfterXMonths, i));
+            }
 
             groupBoxVideoEngine.Text = language.VideoEngine;
             radioButtonVideoPlayerDirectShow.Text = language.DirectShow;
@@ -811,17 +817,14 @@ namespace Nikse.SubtitleEdit.Forms.Options
                 comboBoxAutoBackup.SelectedIndex = 0;
             }
 
-            if (gs.AutoBackupDeleteAfterMonths == 3)
+            var deleteAfterIdx = gs.AutoBackupDeleteAfterMonths - 1;
+            if (deleteAfterIdx >= comboBoxAutoBackupDeleteAfter.Items.Count - 1)
             {
-                comboBoxAutoBackupDeleteAfter.SelectedIndex = 1;
-            }
-            else if (gs.AutoBackupDeleteAfterMonths == 1)
-            {
-                comboBoxAutoBackupDeleteAfter.SelectedIndex = 0;
+                comboBoxAutoBackupDeleteAfter.SelectedIndex = comboBoxAutoBackupDeleteAfter.Items.Count-1;
             }
             else
             {
-                comboBoxAutoBackupDeleteAfter.SelectedIndex = 2;
+                comboBoxAutoBackupDeleteAfter.SelectedIndex = deleteAfterIdx;
             }
 
             checkBoxCheckForUpdates.Checked = gs.CheckForUpdates;
@@ -1241,6 +1244,8 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(generalNode, language.MergeSelectedLinesAndUnbreakCjk, nameof(Configuration.Settings.Shortcuts.GeneralMergeSelectedLinesAndUnbreakCjk));
             AddNode(generalNode, language.MergeSelectedLinesOnlyFirstText, nameof(Configuration.Settings.Shortcuts.GeneralMergeSelectedLinesOnlyFirstText));
             AddNode(generalNode, language.MergeSelectedLinesBilingual, nameof(Configuration.Settings.Shortcuts.GeneralMergeSelectedLinesBilingual));
+            AddNode(generalNode, language.MergeWithPreviousBilingual, nameof(Configuration.Settings.Shortcuts.GeneralMergeWithPreviousBilingual));
+            AddNode(generalNode, language.MergeWithNextBilingual, nameof(Configuration.Settings.Shortcuts.GeneralMergeWithNextBilingual));
             AddNode(generalNode, language.MergeOriginalAndTranslation, nameof(Configuration.Settings.Shortcuts.GeneralMergeOriginalAndTranslation));
             AddNode(generalNode, language.ToggleTranslationMode, nameof(Configuration.Settings.Shortcuts.GeneralToggleTranslationMode));
             AddNode(generalNode, language.SwitchOriginalAndTranslation, nameof(Configuration.Settings.Shortcuts.GeneralSwitchOriginalAndTranslation));
@@ -1279,6 +1284,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(generalNode, language.ApplyAssaOverrideTags, nameof(Configuration.Settings.Shortcuts.GeneralApplyAssaOverrideTags), true);
             AddNode(generalNode, language.SetAssaPosition, nameof(Configuration.Settings.Shortcuts.GeneralSetAssaPosition), true);
             AddNode(generalNode, language.SetAssaResolution, nameof(Configuration.Settings.Shortcuts.GeneralSetAssaResolution));
+            AddNode(generalNode, language.SetAssaBgBox, nameof(Configuration.Settings.Shortcuts.GeneralSetAssaBgBox), true);
             AddNode(generalNode, LanguageSettings.Current.ImageColorPicker.Title, nameof(Configuration.Settings.Shortcuts.GeneralColorPicker));
             AddNode(generalNode, language.TakeAutoBackup, nameof(Configuration.Settings.Shortcuts.GeneralTakeAutoBackup));
             AddNode(generalNode, language.Help, nameof(Configuration.Settings.Shortcuts.GeneralHelp), true);
@@ -1448,6 +1454,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(listViewNode, language.MergeDialog, nameof(Configuration.Settings.Shortcuts.MainMergeDialog));
             AddNode(listViewNode, language.MergeDialogWithNext, nameof(Configuration.Settings.Shortcuts.MainMergeDialogWithNext));
             AddNode(listViewNode, language.MergeDialogWithPrevious, nameof(Configuration.Settings.Shortcuts.MainMergeDialogWithPrevious));
+            AddNode(listViewNode, language.AutoBalanceSelectedLines, nameof(Configuration.Settings.Shortcuts.MainAutoBalanceSelectedLines), true);
             AddNode(listViewNode, language.ToggleFocus, nameof(Configuration.Settings.Shortcuts.MainToggleFocus));
             AddNode(listViewNode, language.ToggleFocusWaveform, nameof(Configuration.Settings.Shortcuts.MainToggleFocusWaveform));
             AddNode(listViewNode, language.ToggleFocusWaveformTextBox, nameof(Configuration.Settings.Shortcuts.MainToggleFocusWaveformTextBox));
@@ -1728,7 +1735,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
         }
 
         public void Initialize(Icon icon, Image newFile, Image openFile, Image saveFile, Image saveFileAs, Image find, Image replace, Image fixCommonErrors, Image removeTextForHi,
-                               Image visualSync, Image burnIn, Image spellCheck, Image netflixGlyphCheck, Image settings, Image help)
+                               Image visualSync, Image burnIn, Image spellCheck, Image netflixGlyphCheck, Image settings, Image help, Image toggleSourceView)
         {
             Icon = (Icon)icon.Clone();
             pictureBoxNew.Image = (Image)newFile.Clone();
@@ -1739,6 +1746,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             pictureBoxReplace.Image = (Image)replace.Clone();
             pictureBoxTBFixCommonErrors.Image = (Image)fixCommonErrors.Clone();
             pictureBoxTBRemoveTextForHi.Image = (Image)removeTextForHi.Clone();
+            pictureBoxToggleSourceView.Image = (Image)toggleSourceView.Clone();
             pictureBoxVisualSync.Image = (Image)visualSync.Clone();
             pictureBoxTBBurnIn.Image = (Image)burnIn.Clone();
             pictureBoxSpellCheck.Image = (Image)spellCheck.Clone();
@@ -1758,6 +1766,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             gs.ShowToolbarReplace = checkBoxReplace.Checked;
             gs.ShowToolbarFixCommonErrors = checkBoxTBFixCommonErrors.Checked;
             gs.ShowToolbarRemoveTextForHi = checkBoxTBRemoveTextForHi.Checked;
+            gs.ShowToolbarToggleSourceView = checkBoxTBToggleSourceView.Checked;
             gs.ShowToolbarVisualSync = checkBoxVisualSync.Checked;
             gs.ShowToolbarBurnIn = checkBoxTBBurnIn.Checked;
             gs.ShowToolbarSettings = checkBoxSettings.Checked;
@@ -1828,18 +1837,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
                 gs.AutoBackupSeconds = 0;
             }
 
-            if (comboBoxAutoBackupDeleteAfter.SelectedIndex == 2)
-            {
-                gs.AutoBackupDeleteAfterMonths = 6;
-            }
-            else if (comboBoxAutoBackupDeleteAfter.SelectedIndex == 1)
-            {
-                gs.AutoBackupDeleteAfterMonths = 3;
-            }
-            else
-            {
-                gs.AutoBackupDeleteAfterMonths = 1;
-            }
+            gs.AutoBackupDeleteAfterMonths = comboBoxAutoBackupDeleteAfter.SelectedIndex+1;
 
             gs.CheckForUpdates = checkBoxCheckForUpdates.Checked;
             gs.AutoSave = checkBoxAutoSave.Checked;
@@ -2152,13 +2150,13 @@ namespace Nikse.SubtitleEdit.Forms.Options
                 _pluginShortcuts = Configuration.Settings.Shortcuts.PluginShortcuts.Select(p => new PluginShortcut { Name = p.Name, Shortcut = p.Shortcut }).ToList();
             }
 
-            if (!Directory.Exists(Configuration.PluginsDirectory))
+            if (!Directory.Exists(Configuration.PluginsDirectory.TrimEnd(Path.DirectorySeparatorChar)))
             {
                 return;
             }
 
             var pluginsNode = new ShortcutNode(LanguageSettings.Current.PluginsGet.Title);
-            foreach (var pluginFileName in Directory.GetFiles(Configuration.PluginsDirectory, "*.DLL"))
+            foreach (var pluginFileName in Configuration.GetPlugins())
             {
                 Main.GetPropertiesAndDoAction(pluginFileName, out var name, out _, out var version, out var description, out var actionType, out _, out var mi);
                 if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(actionType) && mi != null)
@@ -3346,6 +3344,11 @@ namespace Nikse.SubtitleEdit.Forms.Options
                     ProfileUiValueChanged(sender, e);
                 }
             }
+        }
+
+        private void checkBoxTBRemoveTextForHi_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,9 +9,9 @@ using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Logic;
 using Vosk;
 
-namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
+namespace Nikse.SubtitleEdit.Forms.AudioToText
 {
-    public sealed partial class AudioToTextSelectedLines : Form
+    public sealed partial class VoskAudioToTextSelectedLines : Form
     {
         private readonly string _voskFolder;
         private bool _cancel;
@@ -26,7 +25,7 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
 
         public Subtitle TranscribedSubtitle { get; private set; }
 
-        public AudioToTextSelectedLines(List<AudioClipsGet.AudioClip> audioClips, Form parentForm)
+        public VoskAudioToTextSelectedLines(List<AudioClipsGet.AudioClip> audioClips, Form parentForm)
         {
             UiUtil.PreInitialize(this);
             InitializeComponent();
@@ -35,7 +34,6 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
             _parentForm = parentForm;
 
             Text = LanguageSettings.Current.AudioToText.Title;
-            labelInfo.Text = LanguageSettings.Current.AudioToText.Info;
             labelInfo.Text = LanguageSettings.Current.AudioToText.Info;
             groupBoxModels.Text = LanguageSettings.Current.AudioToText.Models;
             labelModel.Text = LanguageSettings.Current.AudioToText.ChooseModel;
@@ -49,7 +47,7 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
 
             checkBoxUsePostProcessing.Checked = Configuration.Settings.Tools.VoskPostProcessing;
             _voskFolder = Path.Combine(Configuration.DataDirectory, "Vosk");
-            AudioToText.FillModels(comboBoxModels, string.Empty);
+            VoskAudioToText.FillModels(comboBoxModels, string.Empty);
 
             textBoxLog.Visible = false;
             textBoxLog.Dock = DockStyle.Fill;
@@ -86,9 +84,12 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
             progressBar1.Maximum = 100;
             progressBar1.Value = 0;
             progressBar1.Visible = true;
-            progressBar1.BringToFront();
             progressBar1.Refresh();
             progressBar1.Top = labelProgress.Bottom + 3;
+            if (!textBoxLog.Visible)
+            {
+                progressBar1.BringToFront();
+            }
         }
 
         private void GenerateBatch()
@@ -113,16 +114,20 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
                 buttonDownload.Enabled = false;
                 comboBoxModels.Enabled = false;
                 var waveFileName = videoFileName;
-                textBoxLog.AppendText("Wav file name: " + waveFileName + Environment.NewLine);
                 var transcript = TranscribeViaVosk(waveFileName, modelFileName);
                 if (_cancel)
                 {
                     TaskbarList.SetProgressState(_parentForm.Handle, TaskbarButtonProgressFlags.NoProgress);
-                    DialogResult = DialogResult.Cancel;
+                    if (!textBoxLog.Visible)
+                    {
+                        DialogResult = DialogResult.Cancel;
+                        progressBar1.Hide();
+                    }
+
                     return;
                 }
 
-                TranscribedSubtitle = postProcessor.Generate(transcript, checkBoxUsePostProcessing.Checked, false, true, false, false);
+                TranscribedSubtitle = postProcessor.Generate(AudioToTextPostProcessor.Engine.Vosk, transcript, checkBoxUsePostProcessing.Checked, false, true, false, false, false, false, null);
 
                 progressBar1.Value = (int)Math.Round(_batchFileNumber * 100.0 / _audioClips.Count, MidpointRounding.AwayFromZero);
                 progressBar1.Refresh();
@@ -148,7 +153,7 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
                 postSub.Paragraphs.Add(audioClip.Paragraph);
             }
 
-            var postSubFixed = postProcessor.Generate(postSub, checkBoxUsePostProcessing.Checked, true, false, true, false);
+            var postSubFixed = postProcessor.Generate(postSub, checkBoxUsePostProcessing.Checked, true, false, true, false, false);
             for (var index = 0; index < _audioClips.Count; index++)
             {
                 var audioClip = _audioClips[index];
@@ -183,7 +188,7 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
 
         internal static string GetLanguage(string text)
         {
-            var languageCodeList = DownloadModel.VoskModels.Select(p => p.TwoLetterLanguageCode);
+            var languageCodeList = VoskModel.Models.Select(p => p.TwoLetterLanguageCode);
             foreach (var languageCode in languageCodeList)
             {
                 if (text.Contains("model-" + languageCode) || text.Contains("model-small-" + languageCode) || text.StartsWith(languageCode, StringComparison.OrdinalIgnoreCase))
@@ -233,7 +238,7 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
                     if (rec.AcceptWaveform(buffer, bytesRead))
                     {
                         var res = rec.Result();
-                        var results = AudioToText.ParseJsonToResult(res);
+                        var results = VoskAudioToText.ParseJsonToResult(res);
                         list.AddRange(results);
                     }
                     else
@@ -251,7 +256,7 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
             }
 
             var finalResult = rec.FinalResult();
-            var finalResults = AudioToText.ParseJsonToResult(finalResult);
+            var finalResults = VoskAudioToText.ParseJsonToResult(finalResult);
             list.AddRange(finalResults);
             timer1.Stop();
             return list;
@@ -286,12 +291,12 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
             {
                 if (textBoxLog.Visible)
                 {
-                    textBoxLog.Visible = true;
-                    textBoxLog.BringToFront();
+                    textBoxLog.Visible = false;
                 }
                 else
                 {
-                    textBoxLog.Visible = false;
+                    textBoxLog.Visible = true;
+                    textBoxLog.BringToFront();
                 }
 
                 e.SuppressKeyPress = true;
@@ -323,32 +328,16 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
             var durationMs = (DateTime.UtcNow.Ticks - _startTicks) / 10_000;
             var msPerFrame = (float)durationMs / _bytesWavRead;
             var estimatedTotalMs = msPerFrame * _bytesWavTotal;
-            var estimatedLeft = ToProgressTime(estimatedTotalMs - durationMs);
+            var estimatedLeft = ProgressHelper.ToProgressTime(estimatedTotalMs - durationMs);
             labelTime.Text = estimatedLeft;
-        }
-
-        public static string ToProgressTime(float estimatedTotalMs)
-        {
-            var timeCode = new TimeCode(estimatedTotalMs);
-            if (timeCode.TotalSeconds < 60)
-            {
-                return string.Format(LanguageSettings.Current.GenerateVideoWithBurnedInSubs.TimeRemainingSeconds, (int)Math.Round(timeCode.TotalSeconds));
-            }
-
-            if (timeCode.TotalSeconds / 60 > 5)
-            {
-                return string.Format(LanguageSettings.Current.GenerateVideoWithBurnedInSubs.TimeRemainingMinutes, (int)Math.Round(timeCode.TotalSeconds / 60));
-            }
-
-            return string.Format(LanguageSettings.Current.GenerateVideoWithBurnedInSubs.TimeRemainingMinutesAndSeconds, timeCode.Minutes + timeCode.Hours * 60, timeCode.Seconds);
         }
 
         private void buttonDownload_Click(object sender, EventArgs e)
         {
-            using (var form = new AudioToTextModelDownload { AutoClose = true })
+            using (var form = new VoskModelDownload { AutoClose = true })
             {
                 form.ShowDialog(this);
-                AudioToText.FillModels(comboBoxModels, form.LastDownloadedModel);
+                VoskAudioToText.FillModels(comboBoxModels, form.LastDownloadedModel);
             }
         }
 
@@ -372,6 +361,11 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
         private void AudioToTextSelectedLines_Shown(object sender, EventArgs e)
         {
             buttonGenerate.Focus();
+        }
+
+        private void AudioToTextSelectedLines_ResizeEnd(object sender, EventArgs e)
+        {
+            listViewInputFiles.AutoSizeLastColumn();
         }
     }
 }

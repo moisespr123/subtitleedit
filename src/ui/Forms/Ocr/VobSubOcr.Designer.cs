@@ -177,6 +177,7 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             this.underlineToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.subtitleListView1 = new Nikse.SubtitleEdit.Controls.SubtitleListView();
             this.timerHideStatus = new System.Windows.Forms.Timer(this.components);
+            this.checkBoxSeHandlesTextMerge = new System.Windows.Forms.CheckBox();
             this.contextMenuStripListview.SuspendLayout();
             this.groupBoxOcrMethod.SuspendLayout();
             this.groupBoxCloudVision.SuspendLayout();
@@ -531,6 +532,7 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             // 
             // groupBoxCloudVision
             // 
+            this.groupBoxCloudVision.Controls.Add(this.checkBoxSeHandlesTextMerge);
             this.groupBoxCloudVision.Controls.Add(this.checkBoxCloudVisionSendOriginalImages);
             this.groupBoxCloudVision.Controls.Add(this.comboBoxCloudVisionLanguage);
             this.groupBoxCloudVision.Controls.Add(this.labelCloudVisionLanguage);
@@ -2032,6 +2034,17 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             this.timerHideStatus.Interval = 2000;
             this.timerHideStatus.Tick += new System.EventHandler(this.timerHideStatus_Tick);
             // 
+            // checkBoxSeHandlesTextMerge
+            // 
+            this.checkBoxSeHandlesTextMerge.AutoSize = true;
+            this.checkBoxSeHandlesTextMerge.Location = new System.Drawing.Point(7, 105);
+            this.checkBoxSeHandlesTextMerge.Name = "checkBoxSeHandlesTextMerge";
+            this.checkBoxSeHandlesTextMerge.Size = new System.Drawing.Size(134, 17);
+            this.checkBoxSeHandlesTextMerge.TabIndex = 5;
+            this.checkBoxSeHandlesTextMerge.Text = "SE handles text merge";
+            this.checkBoxSeHandlesTextMerge.UseVisualStyleBackColor = true;
+            this.checkBoxSeHandlesTextMerge.CheckedChanged += new System.EventHandler(this.checkBoxSeHandlesTextMerge_CheckedChanged);
+            // 
             // VobSubOcr
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2054,6 +2067,7 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             this.Text = "Import/OCR VobSub (sub/idx) subtitle";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VobSubOcr_FormClosing);
             this.Shown += new System.EventHandler(this.FormVobSubOcr_Shown);
+            this.ResizeEnd += new System.EventHandler(this.VobSubOcr_ResizeEnd);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.VobSubOcr_KeyDown);
             this.Resize += new System.EventHandler(this.VobSubOcr_Resize);
             this.contextMenuStripListview.ResumeLayout(false);
@@ -2269,5 +2283,6 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
         private System.Windows.Forms.ComboBox comboBoxCloudVisionLanguage;
         private System.Windows.Forms.Label labelCloudVisionLanguage;
         private System.Windows.Forms.CheckBox checkBoxCloudVisionSendOriginalImages;
+        private System.Windows.Forms.CheckBox checkBoxSeHandlesTextMerge;
     }
 }

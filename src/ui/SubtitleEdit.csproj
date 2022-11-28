@@ -61,8 +61,29 @@
       <HintPath>DLLs\Interop.QuartzTypeLib.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="Microsoft.Win32.Registry, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Win32.Registry.4.7.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
+    <Reference Include="iTin.Core, Version=2.0.0.4, Culture=neutral, PublicKeyToken=91c459d24f0559c7, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\iCPUID.1.0.5\lib\net461\iTin.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="iTin.Core.Hardware.Common, Version=1.0.0.4, Culture=neutral, PublicKeyToken=55a914aaf3e07893, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\iCPUID.1.0.5\lib\net461\iTin.Core.Hardware.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="iTin.Core.Hardware.CrossPlatform.Cpuid, Version=1.0.0.0, Culture=neutral, PublicKeyToken=55a914aaf3e07893, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\iCPUID.1.0.5\lib\net461\iTin.Core.Hardware.CrossPlatform.Cpuid.dll</HintPath>
+    </Reference>
+    <Reference Include="iTin.Core.Interop.CrossPlatform.Cpuid, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1863a70dcfb63184, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\iCPUID.1.0.5\lib\net461\iTin.Core.Interop.CrossPlatform.Cpuid.dll</HintPath>
+    </Reference>
+    <Reference Include="iTin.Core.Interop.Shared, Version=1.0.0.3, Culture=neutral, PublicKeyToken=1863a70dcfb63184, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\iCPUID.1.0.5\lib\net461\iTin.Core.Interop.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="iTin.Hardware.Specification.Cpuid, Version=1.0.0.2, Culture=neutral, PublicKeyToken=4854c22d6845e07c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\iCPUID.1.0.5\lib\net461\iTin.Hardware.Specification.Cpuid.dll</HintPath>
+    </Reference>
+    <Reference Include="iTin.Logging, Version=1.0.0.1, Culture=neutral, PublicKeyToken=1f353418c19ff38d, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\iCPUID.1.0.5\lib\net461\iTin.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Registry, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
     </Reference>
     <Reference Include="NAudio.Core, Version=2.1.0.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NAudio.Core.2.1.0\lib\netstandard2.0\NAudio.Core.dll</HintPath>
@@ -93,11 +114,11 @@
       <HintPath>..\..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Primitives.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
-    <Reference Include="System.Security.AccessControl, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.AccessControl.4.7.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+    <Reference Include="System.Security.AccessControl, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.AccessControl.6.0.0\lib\net461\System.Security.AccessControl.dll</HintPath>
     </Reference>
-    <Reference Include="System.Security.Principal.Windows, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.Principal.Windows.4.7.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms" />
@@ -209,17 +230,35 @@
     <Compile Include="Forms\AudioClipsGet.Designer.cs">
       <DependentUpon>AudioClipsGet.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\SpeechRecognition\AudioToTextSelectedLines.cs">
+    <Compile Include="Forms\AudioToText\WhisperDownload.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\SpeechRecognition\AudioToTextSelectedLines.Designer.cs">
-      <DependentUpon>AudioToTextSelectedLines.cs</DependentUpon>
+    <Compile Include="Forms\AudioToText\WhisperDownload.Designer.cs">
+      <DependentUpon>WhisperDownload.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\SpeechRecognition\AudioToText.cs">
+    <Compile Include="Forms\AudioToText\WhisperAudioToTextSelectedLines.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\SpeechRecognition\AudioToText.Designer.cs">
-      <DependentUpon>AudioToText.cs</DependentUpon>
+    <Compile Include="Forms\AudioToText\WhisperAudioToTextSelectedLines.Designer.cs">
+      <DependentUpon>WhisperAudioToTextSelectedLines.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AudioToText\WhisperModelDownload.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AudioToText\WhisperModelDownload.Designer.cs">
+      <DependentUpon>WhisperModelDownload.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AudioToText\VoskAudioToTextSelectedLines.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AudioToText\VoskAudioToTextSelectedLines.Designer.cs">
+      <DependentUpon>VoskAudioToTextSelectedLines.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AudioToText\VoskAudioToText.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AudioToText\VoskAudioToText.Designer.cs">
+      <DependentUpon>VoskAudioToText.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\BatchConvertMkvEnding.cs">
       <SubType>Form</SubType>
@@ -281,11 +320,11 @@
     <Compile Include="Forms\AddWaveformBatch.Designer.cs">
       <DependentUpon>AddWaveformBatch.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\SpeechRecognition\AudioToTextModelDownload.cs">
+    <Compile Include="Forms\AudioToText\VoskModelDownload.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\SpeechRecognition\AudioToTextModelDownload.Designer.cs">
-      <DependentUpon>AudioToTextModelDownload.cs</DependentUpon>
+    <Compile Include="Forms\AudioToText\VoskModelDownload.Designer.cs">
+      <DependentUpon>VoskModelDownload.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ConvertColorsToDialog.cs">
       <SubType>Form</SubType>
@@ -293,11 +332,17 @@
     <Compile Include="Forms\ConvertColorsToDialog.Designer.cs">
       <DependentUpon>ConvertColorsToDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\SpeechRecognition\Dictate.cs">
+    <Compile Include="Forms\AudioToText\WhisperAudioToText.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\SpeechRecognition\Dictate.Designer.cs">
-      <DependentUpon>Dictate.cs</DependentUpon>
+    <Compile Include="Forms\AudioToText\WhisperAudioToText.Designer.cs">
+      <DependentUpon>WhisperAudioToText.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AudioToText\VoskDictate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AudioToText\VoskDictate.Designer.cs">
+      <DependentUpon>VoskDictate.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\DownloadVosk.cs">
       <SubType>Form</SubType>
@@ -1336,6 +1381,7 @@
     <Compile Include="Logic\ColorChooser\ColorChangedEventArgs.cs" />
     <Compile Include="Logic\ColorChooser\ColorHandler.cs" />
     <Compile Include="Logic\ColorChooser\ColorWheel.cs" />
+    <Compile Include="Logic\CommandLineConvert\BdSupSaver.cs" />
     <Compile Include="Logic\CommandLineConvert\BluRaySupToBluRaySup.cs" />
     <Compile Include="Logic\CommandLineConvert\CommandLineConverter.cs">
       <SubType>Code</SubType>
@@ -1344,6 +1390,7 @@
     <Compile Include="Logic\CommandLineConvert\TsConvert.cs" />
     <Compile Include="Logic\CommandLineConvert\TsToBluRaySup.cs" />
     <Compile Include="Logic\CpsLineLength.cs" />
+    <Compile Include="Logic\CpuInfo.cs" />
     <Compile Include="Logic\CurrentLanguage.cs" />
     <Compile Include="Logic\DarkTheme.cs" />
     <Compile Include="Logic\FileTypeAssociations.cs" />
@@ -1354,6 +1401,7 @@
     <Compile Include="Logic\LanguageStructure.cs" />
     <Compile Include="Logic\Networking\SeNetworkService.cs" />
     <Compile Include="Logic\PathHelper.cs" />
+    <Compile Include="Logic\ProgressHelper.cs" />
     <Compile Include="Logic\ReplaceAllHelper.cs" />
     <Compile Include="Logic\ShotChangesGenerator.cs" />
     <Compile Include="Logic\ListViewSorter.cs" />
@@ -1460,6 +1508,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Assa\AssSetBackground.resx">
       <DependentUpon>AssSetBackground.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Assa\SetPosition.resx">
       <DependentUpon>SetPosition.cs</DependentUpon>
@@ -1479,11 +1528,20 @@
     <EmbeddedResource Include="Forms\AudioClipsGet.resx">
       <DependentUpon>AudioClipsGet.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SpeechRecognition\AudioToTextSelectedLines.resx">
-      <DependentUpon>AudioToTextSelectedLines.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\AudioToText\WhisperDownload.resx">
+      <DependentUpon>WhisperDownload.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SpeechRecognition\AudioToText.resx">
-      <DependentUpon>AudioToText.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\AudioToText\WhisperAudioToTextSelectedLines.resx">
+      <DependentUpon>WhisperAudioToTextSelectedLines.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AudioToText\WhisperModelDownload.resx">
+      <DependentUpon>WhisperModelDownload.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AudioToText\VoskAudioToTextSelectedLines.resx">
+      <DependentUpon>VoskAudioToTextSelectedLines.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AudioToText\VoskAudioToText.resx">
+      <DependentUpon>VoskAudioToText.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\BatchConvertMkvEnding.resx">
       <DependentUpon>BatchConvertMkvEnding.cs</DependentUpon>
@@ -1515,14 +1573,17 @@
     <EmbeddedResource Include="Forms\AddWaveformBatch.resx">
       <DependentUpon>AddWaveformBatch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SpeechRecognition\AudioToTextModelDownload.resx">
-      <DependentUpon>AudioToTextModelDownload.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\AudioToText\VoskModelDownload.resx">
+      <DependentUpon>VoskModelDownload.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ConvertColorsToDialog.resx">
       <DependentUpon>ConvertColorsToDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SpeechRecognition\Dictate.resx">
-      <DependentUpon>Dictate.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\AudioToText\WhisperAudioToText.resx">
+      <DependentUpon>WhisperAudioToText.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AudioToText\VoskDictate.resx">
+      <DependentUpon>VoskDictate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DownloadVosk.resx">
       <DependentUpon>DownloadVosk.cs</DependentUpon>
@@ -2089,6 +2150,7 @@
     <None Include="Resources\ebu.png" />
     <None Include="Resources\color-picker-small2.png" />
     <None Include="Resources\rec32.png" />
+    <None Include="Resources\Help32.png" />
     <Content Include="SE2.ico" />
     <None Include="Resources\SE.ico" />
     <None Include="Hunspellx64.dll">
@@ -2371,6 +2433,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
     <Error Condition="!Exists('..\..\packages\Vosk.0.3.38\build\Vosk.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Vosk.0.3.38\build\Vosk.targets'))" />
+    <Error Condition="!Exists('..\..\packages\iCPUID.1.0.5\build\net461\iCPUID.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\iCPUID.1.0.5\build\net461\iCPUID.targets'))" />
   </Target>
   <Import Project="..\..\packages\Vosk.0.3.38\build\Vosk.targets" Condition="Exists('..\..\packages\Vosk.0.3.38\build\Vosk.targets')" />
+  <Import Project="..\..\packages\iCPUID.1.0.5\build\net461\iCPUID.targets" Condition="Exists('..\..\packages\iCPUID.1.0.5\build\net461\iCPUID.targets')" />
 </Project>

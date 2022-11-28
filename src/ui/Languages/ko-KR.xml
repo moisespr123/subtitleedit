@@ -2,7 +2,7 @@
 <Language Name="Korean (한국어)">
   <General>
     <Title>Subtitle Edit</Title>
-    <Version>3.6.7</Version>
+    <Version>3.6.10</Version>
     <TranslatedBy>☞ 한글화: 도움돌 (domddol@gmail.com)</TranslatedBy>
     <CultureName>ko-KR</CultureName>
     <HelpFile />
@@ -96,6 +96,7 @@
     <ExampleX>예: {0}</ExampleX>
     <Reset>초기화</Reset>
     <Warning>경고</Warning>
+    <UseLargerFontForThisWindow>이 창에 더 큰 글꼴 사용</UseLargerFontForThisWindow>
   </General>
   <About>
     <Title>* Subtitle Edit 정보</Title>
@@ -171,9 +172,16 @@ FFmpeg를 다운로드하고 사용하시겠습니까?</FfmpegNotFound>
   <AudioToText>
     <Title>오디오를 텍스트로</Title>
     <Info>Vosk/Kaldi 음성 인식을 통해 오디오에서 텍스트 생성</Info>
+    <WhisperInfo>Whisper 음성 인식을 통해 오디오에서 텍스트 생성</WhisperInfo>
     <VoskWebsite>Vosk 홈페이지</VoskWebsite>
+    <WhisperWebsite>Whisper 웹사이트</WhisperWebsite>
+    <WhisperNotFound>Whisper을 찾을 수 없음!
+
+더 많은 정보(웹)를 참조하시겠습니까?</WhisperNotFound>
     <Models>모델</Models>
+    <LanguagesAndModels>언어 및 모델</LanguagesAndModels>
     <ChooseModel>모델 선택</ChooseModel>
+    <ChooseLanguage>언어 선택</ChooseLanguage>
     <OpenModelsFolder>모델 폴더 열기</OpenModelsFolder>
     <LoadingVoskModel>Vosk 음성 인식 모델을 로드하는 중...</LoadingVoskModel>
     <Transcribing>오디오를 텍스트로 변환하는 중...</Transcribing>
@@ -181,6 +189,8 @@ FFmpeg를 다운로드하고 사용하시겠습니까?</FfmpegNotFound>
     <XFilesSavedToVideoSourceFolder>{0} 파일을 비디오 소스 폴더에 저장함 </XFilesSavedToVideoSourceFolder>
     <UsePostProcessing>post-processing 사용 (줄 병합, 케이싱 수정, 문장 부호 등)</UsePostProcessing>
     <BatchMode>일괄 모드</BatchMode>
+    <KeepPartialTranscription>일부 전사 유지</KeepPartialTranscription>
+    <TranslateToEnglish>영어로 번역</TranslateToEnglish>
   </AudioToText>
   <AssaAttachments>
     <Title>Advanced Sub Station Alpha 첨부파일</Title>
@@ -640,6 +650,7 @@ FFmpeg를 다운로드하고 사용하시겠습니까?</FfmpegNotFound>
     <SimpleRendering>간단한 렌더링</SimpleRendering>
     <AntiAliasingWithTransparency>투명하게 앤티 앨리어싱</AntiAliasingWithTransparency>
     <Text3D>3D</Text3D>
+    <ImagePrefix>이미지 접두사</ImagePrefix>
     <SideBySide3D>좌/우</SideBySide3D>
     <HalfTopBottom3D>상/하</HalfTopBottom3D>
     <Depth>깊이</Depth>
@@ -891,7 +902,7 @@ FFmpeg를 다운로드하고 사용하시겠습니까?</FfmpegNotFound>
 키를 입력하려면 "옵션 -&gt; 환경설정 -&gt; 도구" 로 이동하십시오.</MsClientSecretNeeded>
     <GoogleNoApiKeyWarning>API 키 없이 번역... (느리고 데이터가 제한됨)
 	
-	API 키를 사용하려면 "옵션 -&gt; 환경설정 -&gt; 도구"로 이동하여 Google 번역 API 키를 입력하십시오.</GoogleNoApiKeyWarning>
+	API 키를 사용하려면, "옵션 -&gt; 환경설정 -&gt; 도구"로 이동하여 Google 번역 API 키를 입력하십시오.</GoogleNoApiKeyWarning>
     <Service>서비스:</Service>
     <LineMergeHandling>줄 병합:</LineMergeHandling>
     <ProcessorMergeNext>최대 두 줄 병합</ProcessorMergeNext>
@@ -906,7 +917,7 @@ FFmpeg를 다운로드하고 사용하시겠습니까?</FfmpegNotFound>
     <TranslateBlockGetFromClipboard>클립보드에서 번역된 텍스트 가져오기 (Ctrl + V)</TranslateBlockGetFromClipboard>
     <TranslateBlockCopySourceText>원본 텍스트 클립보드 복사</TranslateBlockCopySourceText>
     <TranslateBlockClipboardError1>클립보드에 원본 텍스트가 있습니다!</TranslateBlockClipboardError1>
-    <TranslateBlockClipboardError2>번역기로 이동하여 번역하고, 클립보드로 결과를 복사하고 이 단추를 다시 클릭합니다.</TranslateBlockClipboardError2>
+    <TranslateBlockClipboardError2>번역기로 이동하여 번역한 다음, 그 결과물을 클립보드에 복사하고 이 단추를 다시 클릭합니다.</TranslateBlockClipboardError2>
   </GoogleTranslate>
   <GoogleOrMicrosoftTranslate>
     <Title>Google | Microsoft 번역기</Title>
@@ -1260,7 +1271,7 @@ FFmpeg를 다운로드하고 사용하시겠습니까?</FfmpegNotFound>
         <GenerateTextFromVideo>비디오에서 텍스트 생성...</GenerateTextFromVideo>
         <GenerateBlankVideo>빈 비디오 생성...</GenerateBlankVideo>
         <GenerateVideoWithBurnedInSub>자막 입혀진 비디오 파일 생성...</GenerateVideoWithBurnedInSub>
-        <VideoAudioToText>오디오를 텍스트로...</VideoAudioToText>
+        <VideoAudioToTextX>오디오를 텍스트로 ({0})...</VideoAudioToTextX>
         <ImportChaptersFromVideo>비디오에서 챕터 가져오기</ImportChaptersFromVideo>
         <GenerateImportShotChanges>장면 전환 생성/가져오기...</GenerateImportShotChanges>
         <RemoveOrExportShotChanges>장면 전환 제거/내보내기...</RemoveOrExportShotChanges>
@@ -1285,7 +1296,7 @@ FFmpeg를 다운로드하고 사용하시겠습니까?</FfmpegNotFound>
         <AdjustAllTimes>싱크 조정 (빠르게/느리게)...</AdjustAllTimes>
         <VisualSync>시각 동기화...</VisualSync>
         <PointSync>지점 동기화...</PointSync>
-        <PointSyncViaOtherSubtitle>다른 자막으로 지점 동기화...</PointSyncViaOtherSubtitle>
+        <PointSyncViaOtherSubtitle>또 다른 자막으로 지점 동기화...</PointSyncViaOtherSubtitle>
       </Synchronization>
       <AutoTranslate>
         <Title>번역</Title>
@@ -1699,7 +1710,7 @@ FFmpeg를 다운로드하고 사용하시겠습니까?</FfmpegNotFound>
     <UserAndAction>사용자 | 동작</UserAndAction>
     <NetworkMode>네트워크 모드</NetworkMode>
     <XStartedSessionYAtZ>-＞[{0}]가 [{2}]에 {1} 세션을 시작함.</XStartedSessionYAtZ>
-    <OpenOtherSubtitle>다른 자막 열기</OpenOtherSubtitle>
+    <OpenOtherSubtitle>또 다른 자막 열기</OpenOtherSubtitle>
     <BeforeToggleDialogDashes>대화 대시(-) 전환 전</BeforeToggleDialogDashes>
     <ExportPlainTextAs>일반 텍스트 파일로 내보내기</ExportPlainTextAs>
     <TextFiles>텍스트 파일</TextFiles>
@@ -2169,6 +2180,7 @@ FFmpeg를 다운로드하고 사용하시겠습니까?</FfmpegNotFound>
     <ApplyAssaOverrideTags>ASSA 재정의 태그 선택 적용</ApplyAssaOverrideTags>
     <SetAssaPosition>ASSA 위치 설정/얻기</SetAssaPosition>
     <SetAssaResolution>ASSA 해상도 설정 (PlayResX/PlayResY)</SetAssaResolution>
+    <SetAssaBgBox>ASSA 배경 상자 설정</SetAssaBgBox>
     <TakeAutoBackup>지금 자동 백업 실행</TakeAutoBackup>
     <ShowLineBreaksAs>다음 기호로 줄바꿈 표시</ShowLineBreaksAs>
     <SaveAsFileNameFrom>"다른 이름으로 저장..."에서 사용하는 파일 이름</SaveAsFileNameFrom>
@@ -2191,8 +2203,7 @@ FFmpeg를 다운로드하고 사용하시겠습니까?</FfmpegNotFound>
     <AutoBackupEveryFifteenMinutes>15 분마다</AutoBackupEveryFifteenMinutes>
     <AutoBackupDeleteAfter>백업 보존 기간</AutoBackupDeleteAfter>
     <AutoBackupDeleteAfterOneMonth>1 개월</AutoBackupDeleteAfterOneMonth>
-    <AutoBackupDeleteAfterThreeMonths>3 개월</AutoBackupDeleteAfterThreeMonths>
-    <AutoBackupDeleteAfterSixMonths>6 개월</AutoBackupDeleteAfterSixMonths>
+    <AutoBackupDeleteAfterXMonths>{0} 개월</AutoBackupDeleteAfterXMonths>
     <CheckForUpdates>업데이트 확인</CheckForUpdates>
     <AutoSave>자동 저장</AutoSave>
     <AllowEditOfOriginalSubtitle>원본 자막의 편집을 허용</AllowEditOfOriginalSubtitle>
@@ -2404,6 +2415,7 @@ FFmpeg를 다운로드하고 사용하시겠습니까?</FfmpegNotFound>
     <MergeDialog>대화 병합 (대시 삽입)</MergeDialog>
     <MergeDialogWithNext>대화를 다음 대화와 병합 (대시 삽입)</MergeDialogWithNext>
     <MergeDialogWithPrevious>대화를 이전 대화와 병합 (대시 삽입)</MergeDialogWithPrevious>
+    <AutoBalanceSelectedLines>선택한 줄 자동 균형</AutoBalanceSelectedLines>
     <GoToNext>다음 줄로 이동</GoToNext>
     <GoToNextPlayTranslate>다음 줄로 이동 (그리고 '번역 모드'에서 재생)</GoToNextPlayTranslate>
     <GoToNextCursorAtEnd>다음 줄로 이동하여 끝에 커서 설정</GoToNextCursorAtEnd>
@@ -2524,6 +2536,8 @@ FFmpeg를 다운로드하고 사용하시겠습니까?</FfmpegNotFound>
     <MergeSelectedLinesAndUnbreakCjk>선택한 줄 병합하고 공백없이 줄바꿈 제거 (CJK)</MergeSelectedLinesAndUnbreakCjk>
     <MergeSelectedLinesOnlyFirstText>선택한 줄 병합, 첫번째 있는 텍스트만 유지</MergeSelectedLinesOnlyFirstText>
     <MergeSelectedLinesBilingual>선택한 줄의 이중언어 병합</MergeSelectedLinesBilingual>
+    <MergeWithPreviousBilingual>이전 이중언어와 병합</MergeWithPreviousBilingual>
+    <MergeWithNextBilingual>다음 이중언어와 병합</MergeWithNextBilingual>
     <SplitSelectedLineBilingual>선택한 줄 이중언어로 분할</SplitSelectedLineBilingual>
     <ToggleTranslationMode>번역 모드 전환</ToggleTranslationMode>
     <SwitchOriginalAndTranslation>원본과 번역본 바꾸기</SwitchOriginalAndTranslation>
@@ -2560,6 +2574,7 @@ FFmpeg를 다운로드하고 사용하시겠습니까?</FfmpegNotFound>
     <MainTextBoxAutoBreak>자동 줄바꿈</MainTextBoxAutoBreak>
     <MainTextBoxAutoBreakFromPos>커서 위치에서 첫 번째 공간에 줄바꿈</MainTextBoxAutoBreakFromPos>
     <MainTextBoxAutoBreakFromPosAndGoToNext>커서 위치에서 첫 번째 공간에 줄바꿈하고 다음으로 이동</MainTextBoxAutoBreakFromPosAndGoToNext>
+    <MainTextBoxDictate>받아쓰기(키 다운=녹화 시작, 키 업=녹화 종료)</MainTextBoxDictate>
     <MainTextBoxUnbreak>줄바꿈 제거</MainTextBoxUnbreak>
     <MainTextBoxUnbreakNoSpace>공백없이 줄바꿈 제거 (CJK)</MainTextBoxUnbreakNoSpace>
     <MainTextBoxAssaIntellisense>ASSA 태그 도우미 표시</MainTextBoxAssaIntellisense>
@@ -2892,7 +2907,7 @@ FFmpeg를 다운로드하고 사용하시겠습니까?</FfmpegNotFound>
   </SubStationAlphaStylesCategoriesManager>
   <PointSync>
     <Title>* 지점 동기화</Title>
-    <TitleViaOtherSubtitle>다른 자막을 통해 지점 동기화</TitleViaOtherSubtitle>
+    <TitleViaOtherSubtitle>또 다른 자막을 통해 지점 동기화</TitleViaOtherSubtitle>
     <SyncHelp>※ 동기화하려면 최소 2개의 동기화 지점이 필요합니다.</SyncHelp>
     <SetSyncPoint>동기화 지점 설정</SetSyncPoint>
     <RemoveSyncPoint>동기화 지점 삭제</RemoveSyncPoint>
@@ -2915,7 +2930,7 @@ FFmpeg를 다운로드하고 사용하시겠습니까?</FfmpegNotFound>
   </TransportStreamSubtitleChooser>
   <UnknownSubtitle>
     <Title>알 수 없는 자막 형식!</Title>
-    <Message>이 문제를 해결하려면 다음 이메일 주소로 자막 복사본을 보내 주십시오.
+    <Message>이 문제를 해결하려면, 다음 이메일 주소로 자막 복사본을 보내 주십시오.
 # 이메일 주소: mailto:niksedk@gmail.com</Message>
     <ImportAsPlainText>일반 텍스트로 가져오기...</ImportAsPlainText>
   </UnknownSubtitle>
@@ -3040,6 +3055,7 @@ FFmpeg를 다운로드하고 사용하시겠습니까?</FfmpegNotFound>
     <Italic>기울임꼴(&amp;I)</Italic>
     <Abort>종료(&amp;A)</Abort>
     <Skip>무시(&amp;S)</Skip>
+    <UseOnce>한 번 사용(&amp;U}</UseOnce>
     <Nordic>북유럽어</Nordic>
     <Spanish>스페인어</Spanish>
     <German>독일어</German>

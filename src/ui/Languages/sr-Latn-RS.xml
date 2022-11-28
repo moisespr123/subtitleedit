@@ -2,7 +2,7 @@
 <Language Name="srpski">
   <General>
     <Title>Subtitle Edit</Title>
-    <Version>3.6.7</Version>
+    <Version>3.6.10</Version>
     <TranslatedBy>Prevod: Misa Forger</TranslatedBy>
     <CultureName>sr-Latn-RS</CultureName>
     <HelpFile />
@@ -1818,8 +1818,7 @@ da uređujete određeni prevod sa drugim ljudima.</Information>
     <AutoBackupEveryFifteenMinutes>Svakih 15 minuta</AutoBackupEveryFifteenMinutes>
     <AutoBackupDeleteAfter>Obriši posle</AutoBackupDeleteAfter>
     <AutoBackupDeleteAfterOneMonth>1 mesec</AutoBackupDeleteAfterOneMonth>
-    <AutoBackupDeleteAfterThreeMonths>3 meseca</AutoBackupDeleteAfterThreeMonths>
-    <AutoBackupDeleteAfterSixMonths>6 meseci</AutoBackupDeleteAfterSixMonths>
+    <AutoBackupDeleteAfterXMonths>{0} meseci</AutoBackupDeleteAfterXMonths>
     <CheckForUpdates>Provera ažuriranja</CheckForUpdates>
     <AutoSave>Automatsko čuvanje</AutoSave>
     <AllowEditOfOriginalSubtitle>Dozvoli uređivanje originalnog prevoda</AllowEditOfOriginalSubtitle>

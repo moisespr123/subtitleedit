@@ -63,7 +63,9 @@
   <ItemGroup>
     <Compile Include="Assa\TagHelperRemoveTagTest.cs" />
     <Compile Include="Assa\ResamplerTest.cs" />
+    <Compile Include="Assa\AssaTimeCodes.cs" />
     <Compile Include="Dictionaries\StringWithoutSpaceSplitToWordsTest.cs" />
+    <Compile Include="GoogleCloudVision\GoogleCloudVisionJsonToLinesTest.cs" />
     <Compile Include="LanguageFiles\LanguageFileTest.cs" />
     <Compile Include="Logic\ConvertColorsToDialogTest.cs" />
     <Compile Include="Logic\NetflixHelperTest.cs" />
@@ -135,6 +137,9 @@
     <Content Include="Files\sample_MKV_VobSub_PGS.mkv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Files\sample_MP4.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Files\sample_TS_with_graphics.ts">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -173,6 +178,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

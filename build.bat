@@ -129,6 +129,20 @@ IF DEFINED INNOSETUP IF EXIST "%INNOSETUP%" (
 )
 
 
+
+
+SET "WinGetFix=src\UpdateAssemblyInfo\bin\debug\UpdateAssemblyInfo.exe"
+IF NOT EXIST "%WinGetFix%" (
+  ECHO Compile UpdateAssemblyInfo!
+)
+"%WinGetFix%" "winget" 
+ECHO.
+ECHO Validate with: winget validate --manifest C:\git\subtitleedit\winget
+ECHO Test with    : winget install --manifest C:\git\subtitleedit\winget
+ECHO Submit with  : wingetcreate submit C:\git\subtitleedit\winget
+pause
+
+
 :EndSuccessful
 TITLE %BUILDTYPE%ing Subtitle Edit finished!
 GOTO END
@@ -193,6 +207,15 @@ COPY /Y /V "Newtonsoft.Json.dll"                   "temp_zip\"
 COPY /Y /V "System.Net.Http.Primitives.dll"        "temp_zip\"
 COPY /Y /V "NAudio.Core.dll"                       "temp_zip\"
 COPY /Y /V "NAudio.WinMM.dll"                      "temp_zip\"
+COPY /Y /V "cpuid.dll"                             "temp_zip\"
+COPY /Y /V "iTin.Core.dll"                         "temp_zip\"
+COPY /Y /V "iTin.Core.Hardware.Common.dll"         "temp_zip\"
+COPY /Y /V "iTin.Core.Hardware.CrossPlatform.Cpuid.dll" "temp_zip\"
+COPY /Y /V "iTin.Core.Interop.CrossPlatform.Cpuid.dll" "temp_zip\"
+COPY /Y /V "iTin.Core.Interop.Shared.dll"          "temp_zip\"
+COPY /Y /V "iTin.Hardware.Specification.Cpuid.dll" "temp_zip\"
+COPY /Y /V "iTin.Logging.dll"                      "temp_zip\"
+COPY /Y /V "Microsoft.Win32.Registry.dll"          "temp_zip\"
 COPY /Y /V "SubtitleEdit.exe"                      "temp_zip\"
 COPY /Y /V "Languages\*.xml"                       "temp_zip\Languages\"
 COPY /Y /V "..\..\..\..\Dictionaries\*.*"          "temp_zip\Dictionaries\"

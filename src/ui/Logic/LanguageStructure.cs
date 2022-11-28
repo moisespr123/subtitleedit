@@ -1,4 +1,6 @@
-﻿namespace Nikse.SubtitleEdit.Logic
+﻿using System.Drawing;
+
+namespace Nikse.SubtitleEdit.Logic
 {
     // The language classes are built for easy xml-serialization (makes save/load code simple)
     public static class LanguageStructure
@@ -100,6 +102,7 @@
             public string ExampleX { get; set; }
             public string Reset { get; set; }
             public string Warning { get; set; }
+            public string UseLargerFontForThisWindow { get; set; }
         }
 
         public class About
@@ -179,16 +182,24 @@
         {
             public string Title { get; set; }
             public string Info { get; set; }
+            public string WhisperInfo { get; set; }
             public string VoskWebsite { get; set; }
+            public string WhisperWebsite { get; set; }
+            public string WhisperNotFound { get; set; }
             public string Models { get; set; }
+            public string LanguagesAndModels { get; set; }
             public string ChooseModel { get; set; }
+            public string ChooseLanguage { get; set; }
             public string OpenModelsFolder { get; set; }
             public string LoadingVoskModel { get; set; }
             public string Transcribing { get; set; }
             public string TranscribingXOfY { get; set; }
             public string XFilesSavedToVideoSourceFolder { get; set; }
             public string UsePostProcessing { get; set; }
+            public string AutoAdjustTimings { get; set; }
             public string BatchMode { get; set; }
+            public string KeepPartialTranscription { get; set; }
+            public string TranslateToEnglish { get; set; }
         }
 
         public class AssaAttachments
@@ -718,6 +729,7 @@
             public string SimpleRendering { get; set; }
             public string AntiAliasingWithTransparency { get; set; }
             public string Text3D { get; set; }
+            public string ImagePrefix { get; set; }
             public string SideBySide3D { get; set; }
             public string HalfTopBottom3D { get; set; }
             public string Depth { get; set; }
@@ -935,6 +947,7 @@
             public string XGeneratedWithBurnedInSubsInX { get; set; }
             public string TimeRemainingMinutes { get; set; }
             public string TimeRemainingSeconds { get; set; }
+            public string TimeRemainingAFewSeconds { get; set; }
             public string TimeRemainingMinutesAndSeconds { get; set; }
             public string TargetFileName { get; set; }
             public string TargetFileSize { get; set; }
@@ -1653,7 +1666,7 @@
                     public string GenerateTextFromVideo { get; set; }
                     public string GenerateBlankVideo { get; set; }
                     public string GenerateVideoWithBurnedInSub { get; set; }
-                    public string VideoAudioToText { get; set; }
+                    public string VideoAudioToTextX { get; set; }
                     public string ImportChaptersFromVideo { get; set; }
                     public string GenerateImportShotChanges { get; set; }
                     public string RemoveOrExportShotChanges { get; set; }
@@ -2352,6 +2365,7 @@
             public string ApplyAssaOverrideTags { get; set; }
             public string SetAssaPosition { get; set; }
             public string SetAssaResolution { get; set; }
+            public string SetAssaBgBox { get; set; }
             public string TakeAutoBackup { get; set; }
             public string ShowLineBreaksAs { get; set; }
             public string SaveAsFileNameFrom { get; set; }
@@ -2375,8 +2389,7 @@
             public string AutoBackupEveryFifteenMinutes { get; set; }
             public string AutoBackupDeleteAfter { get; set; }
             public string AutoBackupDeleteAfterOneMonth { get; set; }
-            public string AutoBackupDeleteAfterThreeMonths { get; set; }
-            public string AutoBackupDeleteAfterSixMonths { get; set; }
+            public string AutoBackupDeleteAfterXMonths { get; set; }
             public string CheckForUpdates { get; set; }
             public string AutoSave { get; set; }
             public string AllowEditOfOriginalSubtitle { get; set; }
@@ -2590,6 +2603,7 @@
             public string MergeDialog { get; set; }
             public string MergeDialogWithNext { get; set; }
             public string MergeDialogWithPrevious { get; set; }
+            public string AutoBalanceSelectedLines { get; set; }
             public string GoToNext { get; set; }
             public string GoToNextPlayTranslate { get; set; }
             public string GoToNextCursorAtEnd { get; set; }
@@ -2711,6 +2725,8 @@
             public string MergeSelectedLinesAndUnbreakCjk { get; set; }
             public string MergeSelectedLinesOnlyFirstText { get; set; }
             public string MergeSelectedLinesBilingual { get; set; }
+            public string MergeWithPreviousBilingual { get; set; }
+            public string MergeWithNextBilingual { get; set; }
             public string SplitSelectedLineBilingual { get; set; }
             public string ToggleTranslationMode { get; set; }
             public string SwitchOriginalAndTranslation { get; set; }
@@ -3256,6 +3272,7 @@
             public string CloudVisionApi { get; set; }
             public string ApiKey { get; set; }
             public string SendOriginalImages { get; set; }
+            public string SeHandlesTextMerge { get; set; }
         }
 
         public class VobSubOcrCharacter

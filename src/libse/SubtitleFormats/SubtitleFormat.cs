@@ -160,6 +160,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                     new NciTimedRollUpCaptions(),
                     new NetflixImsc11Japanese(),
                     new NetflixTimedText(),
+                    new NinsightXml(),
                     new OgmChapters(),
                     new OpenDvt(),
                     new Oresme(),
@@ -235,6 +236,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                     new VocapiaSplit(),
                     new WebVTT(),
                     new WebVTTFileWithLineNumber(),
+                    new WhisperRaw(),
                     new Xif(),
                     new Xmp(),
                     new YouTubeAnnotations(),
@@ -351,34 +353,30 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                     new UnknownSubtitle106(),
                 };
 
-                string path = Configuration.PluginsDirectory;
-                if (Directory.Exists(path))
+                foreach (var pluginFileName in Configuration.GetPlugins())
                 {
-                    foreach (string pluginFileName in Directory.EnumerateFiles(path, "*.DLL"))
+                    try
                     {
-                        try
+                        var assembly = System.Reflection.Assembly.Load(FileUtil.ReadAllBytesShared(pluginFileName));
+                        foreach (var exportedType in assembly.GetExportedTypes())
                         {
-                            var assembly = System.Reflection.Assembly.Load(FileUtil.ReadAllBytesShared(pluginFileName));
-                            foreach (var exportedType in assembly.GetExportedTypes())
+                            try
                             {
-                                try
+                                var pluginObject = Activator.CreateInstance(exportedType);
+                                if (pluginObject is SubtitleFormat po)
                                 {
-                                    object pluginObject = Activator.CreateInstance(exportedType);
-                                    if (pluginObject is SubtitleFormat po)
-                                    {
-                                        _allSubtitleFormats.Insert(1, po);
-                                    }
-                                }
-                                catch
-                                {
-                                    // ignored
+                                    _allSubtitleFormats.Insert(1, po);
                                 }
                             }
+                            catch
+                            {
+                                // ignored
+                            }
                         }
-                        catch
-                        {
-                            // ignored
-                        }
+                    }
+                    catch
+                    {
+                        // ignored
                     }
                 }
 

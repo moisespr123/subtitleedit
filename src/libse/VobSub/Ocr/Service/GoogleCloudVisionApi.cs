@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -223,6 +224,97 @@ namespace Nikse.SubtitleEdit.Core.VobSub.Ocr.Service
                 throw new OcrException(message, webException);
             }
 
+            return JsonToStringList(language, content);
+        }
+
+        public static List<string> JsonToStringList(string language, string content)
+        {
+            if (Configuration.Settings.Tools.OcrGoogleCloudVisionSeHandlesTextMerge)
+            {
+                var annotations = GetAnnotations(content).ToList();
+                if (annotations.Count > 0)
+                {
+                    var lines = new List<List<Annotation>>();
+                    Annotation last = null;
+                    var lineThreshold = Math.Max(9, annotations.Average(p => p.Height) / 4.0);
+                    var lineIndex = 0;
+
+                    // Split to lines
+                    foreach (var a in annotations.OrderBy(p => p.GetMediumY()))
+                    {
+                        if (last != null)
+                        {
+                            var diff = Math.Abs(last.GetMediumY() - a.GetMediumY());
+                            if (diff > lineThreshold && last.Vertices.Max(p => p.Y) <= a.Vertices.Min(p => p.Y))
+                            {
+                                lineIndex++;
+                                lines.Add(new List<Annotation>());
+                                lines[lineIndex].Add(a);
+                            }
+                            else
+                            {
+                                lines[lineIndex].Add(a);
+                            }
+                        }
+                        else
+                        {
+                            lines.Add(new List<Annotation>());
+                            lines[lineIndex].Add(a);
+                        }
+
+                        last = a;
+                    }
+
+                    // Merge lines ordered by X
+                    var sb = new StringBuilder();
+                    var spaceThreshold = Math.Max(12, annotations.Average(p => p.Width) / 2.7);
+                    foreach (var line in lines)
+                    {
+                        var sbLine = new StringBuilder();
+                        last = null;
+                        foreach (var l in line.OrderBy(p => p.Vertices.Min(p2 => p2.X)))
+                        {
+                            if (last != null)
+                            {
+                                var diff = l.Vertices.Min(p => p.X) - last.Vertices.Max(p => p.X);
+                                if (diff > spaceThreshold || last.DetectedBreak == "SPACE" || last.DetectedBreak == "EOL_SURE_SPACE" || last.DetectedBreak == "LINE_BREAK")
+                                {
+                                    sbLine.Append(" ");
+                                }
+
+                                sbLine.Append(l.Text);
+                            }
+                            else
+                            {
+                                sbLine.Append(l.Text);
+                            }
+
+                            last = l;
+                        }
+
+                        if (language == "fr")
+                        {
+                            sb.AppendLine(sbLine.ToString().Trim());
+                        }
+                        else
+                        {
+                            sb.AppendLine(sbLine.ToString().Trim()
+                                .Replace(" .", ".")
+                                .Replace(" ,", ",")
+                                .Replace(" ?", "?")
+                                .Replace(" !", "!"));
+                        }
+                    }
+
+                    var ocrResult = sb.ToString().Trim();
+                    if (ocrResult.Length > 0)
+                    {
+                        return new List<string> { ocrResult };
+                    }
+                }
+            }
+
+
             var resultList = new List<string>();
             var parser = new JsonParser();
             var jsonObject = (Dictionary<string, object>)parser.Parse(content);
@@ -267,6 +359,107 @@ namespace Nikse.SubtitleEdit.Core.VobSub.Ocr.Service
             return resultList;
         }
 
+        private static IEnumerable<Annotation> GetAnnotations(string content)
+        {
+            var jsonParser = new SeJsonParser();
+            var fullTextAnnotation = jsonParser.GetFirstObject(content, "fullTextAnnotation");
+            var pages = jsonParser.GetArrayElementsByName(fullTextAnnotation, "pages");
+            var annotations = new List<Annotation>();
+            foreach (var page in pages)
+            {
+                var paragraphs = jsonParser.GetArrayElementsByName(page, "paragraphs");
+                foreach (var paragraph in paragraphs)
+                {
+                    var words = jsonParser.GetArrayElementsByName(paragraph, "words");
+                    foreach (var word in words)
+                    {
+                        var symbols = jsonParser.GetArrayElementsByName(word, "symbols");
+                        foreach (var symbol in symbols)
+                        {
+                            var text = jsonParser.GetFirstObject(symbol, "text");
+                            var detectedBreak = jsonParser.GetFirstObject(symbol, "detectedBreak");
+                            if (!string.IsNullOrEmpty(detectedBreak))
+                            {
+                                detectedBreak = jsonParser.GetFirstObject(detectedBreak, "type");
+                            }
+
+                            var vertices = new List<Point>();
+                            foreach (var point in jsonParser.GetArrayElementsByName(symbol, "vertices"))
+                            {
+                                var x = jsonParser.GetFirstObject(point, "x");
+                                var y = jsonParser.GetFirstObject(point, "y");
+                                if (int.TryParse(x, out var xNumber) && int.TryParse(y, out var yNumber))
+                                {
+                                    vertices.Add(new Point(xNumber, yNumber));
+                                }
+                            }
+
+                            if (!string.IsNullOrEmpty(text) && vertices.Count > 0)
+                            {
+                                annotations.Add(new Annotation
+                                {
+                                    Text = text,
+                                    Vertices = vertices,
+                                    DetectedBreak = detectedBreak,
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+
+            return annotations;
+        }
+
+        public class Annotation
+        {
+            public string Text { get; set; }
+            public List<Point> Vertices { get; set; }
+            public string DetectedBreak { get; set; }
+
+            public int Width
+            {
+                get
+                {
+                    var min = Vertices.Min(p => p.X);
+                    var max = Vertices.Max(p => p.X);
+                    return max - min;
+                }
+            }
+
+            public int Height
+            {
+                get
+                {
+                    var min = Vertices.Min(p => p.Y);
+                    var max = Vertices.Max(p => p.Y);
+                    return max - min;
+                }
+            }
+
+            public double GetMediumY()
+            {
+                const int addY = 5;
+                var lowChars = new[] { ",", "." };
+                var highChars = new[] { "'", "\"" };
+                var min = Vertices.Min(p => p.Y);
+                var max = Vertices.Max(p => p.Y);
+                var medium = max + min / 2.0;
+
+                if (lowChars.Contains(Text))
+                {
+                    return medium - addY;
+                }
+
+                if (highChars.Contains(Text))
+                {
+                    return medium + addY;
+                }
+
+                return medium;
+            }
+        }
+
         [DataContract, Serializable]
         public class RequestBody
         {
@@ -291,9 +484,9 @@ namespace Nikse.SubtitleEdit.Core.VobSub.Ocr.Service
 
                 public Request(string imageContent, string language)
                 {
-                    this.image = new Image(imageContent);
-                    this.imageContext = new ImageContext(new List<string>() { language, "en" }); // English as fallback
-                    this.features = new List<Feature>() { new Feature("TEXT_DETECTION", 1) };
+                    image = new Image(imageContent);
+                    imageContext = new ImageContext(new List<string>() { language, "en" }); // English as fallback
+                    features = new List<Feature> { new Feature("TEXT_DETECTION", 1) };
                 }
 
 

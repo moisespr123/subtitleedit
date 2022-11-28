@@ -13,9 +13,9 @@ using Nikse.SubtitleEdit.Core.SubtitleFormats;
 using Nikse.SubtitleEdit.Logic;
 using Vosk;
 
-namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
+namespace Nikse.SubtitleEdit.Forms.AudioToText
 {
-    public sealed partial class AudioToText : Form
+    public sealed partial class VoskAudioToText : Form
     {
         private readonly string _videoFileName;
         private readonly int _audioTrackNumber;
@@ -30,10 +30,11 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
         private readonly Form _parentForm;
         private bool _useCenterChannelOnly;
         private Model _model;
+        private int _initialWidth = 725;
 
         public Subtitle TranscribedSubtitle { get; private set; }
 
-        public AudioToText(string videoFileName, int audioTrackNumber, Form parentForm)
+        public VoskAudioToText(string videoFileName, int audioTrackNumber, Form parentForm)
         {
             UiUtil.PreInitialize(this);
             InitializeComponent();
@@ -44,7 +45,6 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
             _parentForm = parentForm;
 
             Text = LanguageSettings.Current.AudioToText.Title;
-            labelInfo.Text = LanguageSettings.Current.AudioToText.Info;
             labelInfo.Text = LanguageSettings.Current.AudioToText.Info;
             groupBoxModels.Text = LanguageSettings.Current.AudioToText.Models;
             labelModel.Text = LanguageSettings.Current.AudioToText.ChooseModel;
@@ -63,7 +63,7 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
             columnHeaderFileName.Text = LanguageSettings.Current.JoinSubtitles.FileName;
 
             checkBoxUsePostProcessing.Checked = Configuration.Settings.Tools.VoskPostProcessing;
-            _voskFolder = Path.Combine(Configuration.DataDirectory, "Vosk");
+            _voskFolder = VoskModel.ModelFolder;
             FillModels(comboBoxModels, string.Empty);
 
             textBoxLog.Visible = false;
@@ -143,11 +143,10 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
             buttonBatchMode.Enabled = false;
             comboBoxModels.Enabled = false;
             var waveFileName = GenerateWavFile(_videoFileName, _audioTrackNumber);
-            textBoxLog.AppendText("Wav file name: " + waveFileName);
             textBoxLog.AppendText(Environment.NewLine);
             progressBar1.Style = ProgressBarStyle.Blocks;
             var transcript = TranscribeViaVosk(waveFileName, modelFileName);
-            if (_cancel)
+            if (_cancel && (transcript == null || transcript.Count == 0 || MessageBox.Show(LanguageSettings.Current.AudioToText.KeepPartialTranscription, Text, MessageBoxButtons.YesNoCancel) != DialogResult.Yes))
             {
                 DialogResult = DialogResult.Cancel;
                 return;
@@ -157,7 +156,7 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
             {
                 ParagraphMaxChars = Configuration.Settings.General.SubtitleLineMaximumLength * 2,
             };
-            TranscribedSubtitle = postProcessor.Generate(transcript, checkBoxUsePostProcessing.Checked, true, true, true, true);
+            TranscribedSubtitle = postProcessor.Generate(AudioToTextPostProcessor.Engine.Vosk, transcript, checkBoxUsePostProcessing.Checked, true, true, true, true, false, false, null);
             DialogResult = DialogResult.OK;
         }
 
@@ -166,15 +165,20 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
             progressBar1.Maximum = 100;
             progressBar1.Value = 0;
             progressBar1.Visible = true;
-            progressBar1.BringToFront();
             progressBar1.Refresh();
             progressBar1.Top = labelProgress.Bottom + 3;
+            if (!textBoxLog.Visible)
+            {
+                progressBar1.BringToFront();
+            }
         }
 
         private void GenerateBatch()
         {
             groupBoxInputFiles.Enabled = false;
             _batchFileNumber = 0;
+            var errors = new StringBuilder();
+            var errorCount = 0;
             textBoxLog.AppendText("Batch mode" + Environment.NewLine);
             foreach (ListViewItem lvi in listViewInputFiles.Items)
             {
@@ -189,7 +193,13 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
                 buttonBatchMode.Enabled = false;
                 comboBoxModels.Enabled = false;
                 var waveFileName = GenerateWavFile(videoFileName, _audioTrackNumber);
-                textBoxLog.AppendText("Wav file name: " + waveFileName + Environment.NewLine);
+                if (!File.Exists(waveFileName))
+                {
+                    errors.AppendLine("Unable to extract audio from: " + videoFileName);
+                    errorCount++;
+                    continue;
+                }
+
                 progressBar1.Style = ProgressBarStyle.Blocks;
                 var transcript = TranscribeViaVosk(waveFileName, modelFileName);
                 if (_cancel)
@@ -208,7 +218,7 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
                 {
                     ParagraphMaxChars = Configuration.Settings.General.SubtitleLineMaximumLength * 2,
                 };
-                TranscribedSubtitle = postProcessor.Generate(transcript, checkBoxUsePostProcessing.Checked, true, true, true, true);
+                TranscribedSubtitle = postProcessor.Generate(AudioToTextPostProcessor.Engine.Vosk, transcript, checkBoxUsePostProcessing.Checked, true, true, true, true, false, false, null);
 
                 SaveToSourceFolder(videoFileName);
                 TaskbarList.SetProgressValue(_parentForm.Handle, _batchFileNumber, listViewInputFiles.Items.Count);
@@ -218,7 +228,14 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
             labelTime.Text = string.Empty;
 
             TaskbarList.StartBlink(_parentForm, 10, 1, 2);
-            MessageBox.Show(string.Format(LanguageSettings.Current.AudioToText.XFilesSavedToVideoSourceFolder, listViewInputFiles.Items.Count));
+
+            if (errors.Length > 0)
+            {
+                MessageBox.Show($"{errorCount} error(s)!{Environment.NewLine}{errors}");
+            }
+
+            MessageBox.Show(string.Format(LanguageSettings.Current.AudioToText.XFilesSavedToVideoSourceFolder, listViewInputFiles.Items.Count - errorCount));
+
             groupBoxInputFiles.Enabled = true;
             buttonGenerate.Enabled = true;
             buttonDownload.Enabled = true;
@@ -243,7 +260,7 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
 
         internal static string GetLanguage(string text)
         {
-            var languageCodeList = DownloadModel.VoskModels.Select(p => p.TwoLetterLanguageCode);
+            var languageCodeList = VoskModel.Models.Select(p => p.TwoLetterLanguageCode);
             foreach (var languageCode in languageCodeList)
             {
                 if (text.Contains("model-" + languageCode) || text.Contains("model-small-" + languageCode) || text.StartsWith(languageCode, StringComparison.OrdinalIgnoreCase))
@@ -322,7 +339,7 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
                     if (_cancel)
                     {
                         TaskbarList.SetProgressState(_parentForm.Handle, TaskbarButtonProgressFlags.NoProgress);
-                        return null;
+                        break;
                     }
                 }
 
@@ -407,7 +424,7 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
                     labelProgress.Text = string.Format(LanguageSettings.Current.AddWaveform.ExtractingMinutes, (int)(seconds / 60), (int)(seconds % 60));
                 }
 
-                Refresh();
+                Invalidate();
                 if (_cancel)
                 {
                     process.Kill();
@@ -536,12 +553,12 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
             {
                 if (textBoxLog.Visible)
                 {
-                    textBoxLog.Visible = true;
-                    textBoxLog.BringToFront();
+                    textBoxLog.Visible = false;
                 }
                 else
                 {
-                    textBoxLog.Visible = false;
+                    textBoxLog.Visible = true;
+                    textBoxLog.BringToFront();
                 }
 
                 e.SuppressKeyPress = true;
@@ -573,29 +590,13 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
             var durationMs = (DateTime.UtcNow.Ticks - _startTicks) / 10_000;
             var msPerFrame = (float)durationMs / _bytesWavRead;
             var estimatedTotalMs = msPerFrame * _bytesWavTotal;
-            var estimatedLeft = ToProgressTime(estimatedTotalMs - durationMs);
+            var estimatedLeft = ProgressHelper.ToProgressTime(estimatedTotalMs - durationMs);
             labelTime.Text = estimatedLeft;
-        }
-
-        public static string ToProgressTime(float estimatedTotalMs)
-        {
-            var timeCode = new TimeCode(estimatedTotalMs);
-            if (timeCode.TotalSeconds < 60)
-            {
-                return string.Format(LanguageSettings.Current.GenerateVideoWithBurnedInSubs.TimeRemainingSeconds, (int)Math.Round(timeCode.TotalSeconds));
-            }
-
-            if (timeCode.TotalSeconds / 60 > 5)
-            {
-                return string.Format(LanguageSettings.Current.GenerateVideoWithBurnedInSubs.TimeRemainingMinutes, (int)Math.Round(timeCode.TotalSeconds / 60));
-            }
-
-            return string.Format(LanguageSettings.Current.GenerateVideoWithBurnedInSubs.TimeRemainingMinutesAndSeconds, timeCode.Minutes + timeCode.Hours * 60, timeCode.Seconds);
         }
 
         private void buttonDownload_Click(object sender, EventArgs e)
         {
-            using (var form = new AudioToTextModelDownload { AutoClose = true })
+            using (var form = new VoskModelDownload { AutoClose = true })
             {
                 form.ShowDialog(this);
                 FillModels(comboBoxModels, form.LastDownloadedModel);
@@ -617,7 +618,7 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
 
                 foreach (var fileName in openFileDialog1.FileNames)
                 {
-                    listViewInputFiles.Items.Add(fileName);
+                    AddInputFile(fileName);
                 }
             }
         }
@@ -649,13 +650,23 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
                 Height = checkBoxUsePostProcessing.Bottom + progressBar1.Height + buttonCancel.Height + 450;
                 listViewInputFiles.Visible = true;
                 buttonBatchMode.Text = LanguageSettings.Current.Split.Basic;
+                MinimumSize = new Size(MinimumSize.Width, Height - 75);
+                FormBorderStyle = FormBorderStyle.Sizable;
+                MaximizeBox = true;
+                MinimizeBox = true;
             }
             else
             {
                 groupBoxInputFiles.Enabled = false;
-                Height = checkBoxUsePostProcessing.Bottom + progressBar1.Height + buttonCancel.Height + 70;
+                var h = checkBoxUsePostProcessing.Bottom + progressBar1.Height + buttonCancel.Height + 70;
+                MinimumSize = new Size(MinimumSize.Width, h - 10);
+                Height = h;
+                Width = _initialWidth;
                 listViewInputFiles.Visible = false;
                 buttonBatchMode.Text = LanguageSettings.Current.AudioToText.BatchMode;
+                FormBorderStyle = FormBorderStyle.FixedDialog;
+                MaximizeBox = false;
+                MinimizeBox = true;
             }
         }
 
@@ -673,6 +684,81 @@ namespace Nikse.SubtitleEdit.Forms.SpeechRecognition
         private void AudioToText_Shown(object sender, EventArgs e)
         {
             buttonGenerate.Focus();
+            _initialWidth = Width;
+        }
+
+        private void listViewInputFiles_DragEnter(object sender, DragEventArgs e)
+        {
+            if (!buttonGenerate.Visible)
+            {
+                e.Effect = DragDropEffects.None;
+                return;
+            }
+
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
+            {
+                e.Effect = DragDropEffects.All;
+            }
+        }
+
+        private void listViewInputFiles_DragDrop(object sender, DragEventArgs e)
+        {
+            var fileNames = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            System.Threading.SynchronizationContext.Current.Post(TimeSpan.FromMilliseconds(25), () =>
+            {
+                listViewInputFiles.BeginUpdate();
+                foreach (var fileName in fileNames.OrderBy(Path.GetFileName))
+                {
+                    if (File.Exists(fileName))
+                    {
+                        AddInputFile(fileName);
+                    }
+                }
+
+                listViewInputFiles.EndUpdate();
+            });
+        }
+
+        private void AddInputFile(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return;
+            }
+
+            var ext = Path.GetExtension(fileName).ToLowerInvariant();
+            if ((Utilities.AudioFileExtensions.Contains(ext) || Utilities.VideoFileExtensions.Contains(ext)) && File.Exists(fileName))
+            {
+                listViewInputFiles.Items.Add(fileName);
+            }
+        }
+
+        private void AudioToText_ResizeEnd(object sender, EventArgs e)
+        {
+            listViewInputFiles.AutoSizeLastColumn();
+        }
+
+        private void listViewInputFiles_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.V && e.Modifiers == Keys.Control) //Ctrl+V = Paste from clipboard
+            {
+                e.SuppressKeyPress = true;
+                if (Clipboard.ContainsFileDropList())
+                {
+                    foreach (var fileName in Clipboard.GetFileDropList())
+                    {
+                        AddInputFile(fileName);
+                    }
+                }
+                else if (Clipboard.ContainsText())
+                {
+                    foreach (var fileName in Clipboard.GetText().SplitToLines())
+                    {
+                        AddInputFile(fileName);
+                    }
+                }
+            }
         }
     }
 }

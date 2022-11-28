@@ -129,6 +129,8 @@ namespace Nikse.SubtitleEdit.Forms
             buttonAddToNames.Text = LanguageSettings.Current.SpellCheck.AddToNamesAndIgnoreList;
             buttonGoogleIt.Text = LanguageSettings.Current.Main.VideoControls.GoogleIt;
             deleteToolStripMenuItem.Text = LanguageSettings.Current.General.DeleteCurrentLine;
+            useLargerFontForThisWindowToolStripMenuItem.Text = LanguageSettings.Current.General.UseLargerFontForThisWindow;
+            useLargerFontForThisWindowToolStripMenuItem1.Text = LanguageSettings.Current.General.UseLargerFontForThisWindow;
             bookmarkCommentToolStripMenuItem.Text = LanguageSettings.Current.Settings.ToggleBookmarksWithComment;
             bookmarkCommentToolStripMenuItem.ShortcutKeys = UiUtil.GetKeys(Configuration.Settings.Shortcuts.GeneralToggleBookmarksWithText);
 
@@ -141,6 +143,11 @@ namespace Nikse.SubtitleEdit.Forms
             richTextBoxParagraph.DetectUrls = false;
 
             LoadImageSub(_imageSubFileName);
+
+            if (Configuration.Settings.Tools.SpellCheckUseLargerFont)
+            {
+                useLargerFontForThisWindowToolStripMenuItem_Click(null, null);
+            }
         }
 
         private void LoadImageSub(string fileName)
@@ -333,14 +340,7 @@ namespace Nikse.SubtitleEdit.Forms
 
             _wordSplitListLanguage = languageName;
             var threeLetterIsoLanguageName = Iso639Dash2LanguageCode.GetThreeLetterCodeFromTwoLetterCode(twoLetterLanguageName);
-            var fileName = $"{Configuration.DictionariesDirectory}{threeLetterIsoLanguageName}_WordSplitList.txt";
-            if (!File.Exists(fileName))
-            {
-                return Array.Empty<string>();
-            }
-
-            var wordList = File.ReadAllText(fileName).SplitToLines().Where(p => p.Trim().Length > 0).ToList();
-            return wordList.ToArray();
+            return StringWithoutSpaceSplitToWords.LoadWordSplitList(threeLetterIsoLanguageName, null);
         }
 
         private void FillSpellCheckDictionaries(string languageName)
@@ -773,16 +773,6 @@ namespace Nikse.SubtitleEdit.Forms
                         _currentIndex++;
                         _currentParagraph = _subtitle.Paragraphs[_currentIndex];
 
-                        panelBookmark.Hide();
-                        if (_currentParagraph.Bookmark != null)
-                        {
-                            pictureBoxBookmark.Show();
-                        }
-                        else
-                        {
-                            pictureBoxBookmark.Hide();
-                        }
-
                         SetWords(_currentParagraph.Text);
                         _wordsIndex = 0;
                         if (_words.Count == 0)
@@ -801,6 +791,16 @@ namespace Nikse.SubtitleEdit.Forms
                         DialogResult = DialogResult.OK;
                         return;
                     }
+                }
+
+                panelBookmark.Hide();
+                if (_currentParagraph.Bookmark != null)
+                {
+                    pictureBoxBookmark.Show();
+                }
+                else
+                {
+                    pictureBoxBookmark.Hide();
                 }
 
                 int minLength = 2;
@@ -1730,6 +1730,14 @@ namespace Nikse.SubtitleEdit.Forms
             {
                 pictureBoxBookmark.Hide();
             }
+        }
+
+        private void useLargerFontForThisWindowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Font = useLargerFontForThisWindowToolStripMenuItem.Checked ? new Font(Font.FontFamily, Font.Size - 2, FontStyle.Regular) : new Font(Font.FontFamily, Font.Size + 2, FontStyle.Regular);
+            useLargerFontForThisWindowToolStripMenuItem.Checked = !useLargerFontForThisWindowToolStripMenuItem.Checked;
+            useLargerFontForThisWindowToolStripMenuItem1.Checked = useLargerFontForThisWindowToolStripMenuItem.Checked;
+            Configuration.Settings.Tools.SpellCheckUseLargerFont = useLargerFontForThisWindowToolStripMenuItem.Checked;
         }
     }
 }

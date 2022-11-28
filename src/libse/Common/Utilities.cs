@@ -143,6 +143,7 @@ namespace Nikse.SubtitleEdit.Core.Common
 
         public static void SetSecurityProtocol()
         {
+            ServicePointManager.Expect100Continue = true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
         }
 
@@ -896,14 +897,15 @@ namespace Nikse.SubtitleEdit.Core.Common
 
         public static int GetMaxLineLength(string text)
         {
-            int maxLength = 0;
-            foreach (string line in HtmlUtil.RemoveHtmlTags(text, true).SplitToLines())
+            var maxLength = 0;
+            foreach (var line in HtmlUtil.RemoveHtmlTags(text, true).SplitToLines())
             {
                 if (line.Length > maxLength)
                 {
                     maxLength = line.Length;
                 }
             }
+
             return maxLength;
         }
 
@@ -1078,30 +1080,6 @@ namespace Nikse.SubtitleEdit.Core.Common
                     if (!userWordList.Contains(s))
                     {
                         userWordList.Add(s);
-                    }
-                }
-            }
-            return userWordListXmlFileName;
-        }
-
-        public static string LoadUserWordList(HashSet<string> userWordList, string languageName)
-        {
-            userWordList.Clear();
-            var userWordDictionary = new XmlDocument();
-            string userWordListXmlFileName = DictionaryFolder + languageName + "_user.xml";
-            if (File.Exists(userWordListXmlFileName))
-            {
-                userWordDictionary.Load(userWordListXmlFileName);
-                var nodes = userWordDictionary.DocumentElement?.SelectNodes("word");
-                if (nodes != null)
-                {
-                    foreach (XmlNode node in nodes)
-                    {
-                        string s = node.InnerText.ToLowerInvariant();
-                        if (!userWordList.Contains(s))
-                        {
-                            userWordList.Add(s);
-                        }
                     }
                 }
             }
@@ -2003,12 +1981,12 @@ namespace Nikse.SubtitleEdit.Core.Common
             const char operatingSystemCommand = '\u009D';
 
             var text = input.Trim();
-            int len = text.Length;
-            int count = 0;
-            char[] textChars = new char[len];
-            for (int i = 0; i < len; i++)
+            var len = text.Length;
+            var count = 0;
+            var textChars = new char[len];
+            for (var i = 0; i < len; i++)
             {
-                char ch = text[i];
+                var ch = text[i];
                 switch (ch)
                 {
                     // Ignore: \u200B, \uFEFF and \u009D.
@@ -2130,14 +2108,17 @@ namespace Nikse.SubtitleEdit.Core.Common
                 text = text.Replace(" ,", ",");
             }
 
-            while (text.Contains(" 's "))
+            if (language != "nl")
             {
-                text = text.Replace(" 's ", "'s ");
-            }
+                while (text.Contains(" 's "))
+                {
+                    text = text.Replace(" 's ", "'s ");
+                }
 
-            while (text.Contains(" 's" + Environment.NewLine))
-            {
-                text = text.Replace(" 's" + Environment.NewLine, "'s" + Environment.NewLine);
+                while (text.Contains(" 's" + Environment.NewLine))
+                {
+                    text = text.Replace(" 's" + Environment.NewLine, "'s" + Environment.NewLine);
+                }
             }
 
             if (text.EndsWith(" .", StringComparison.Ordinal))
